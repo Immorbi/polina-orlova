@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polina Orlova — Portfolio 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:   #1e2b3c;
+      --paper: #ffffff;
+      --dim:   rgba(30,43,60,.42);
+      --rule:  rgba(30,43,60,.12);
+      --mono:  'Space Mono', monospace;
+      --serif: 'Lora', Georgia, serif;
+      --disp:  'Playfair Display', Georgia, serif;
+      --nav:   52px;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 999; pointer-events: none;
+      opacity: .018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+    }
+
+    /* ── scroll container ── */
+    .scroll-wrap {
+      height: 100%;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    .scroll-wrap::-webkit-scrollbar { display: none; }
+    .scroll-wrap { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ── nav ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav);
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+      z-index: 100;
+      opacity: 0;
+      animation: fadeUp .6s ease .2s forwards;
+    }
+    .nav-name {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-contact {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .1em;
+      color: var(--dim);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .25s ease;
+    }
+    .nav-contact:hover { color: var(--ink); }
+    .nav-sep { width: 1px; height: 14px; background: var(--rule); }
+    .nav-download {
+      font-family: var(--mono);
+      font-size: 8.5px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--ink);
+      text-decoration: none;
+      padding: 8px 16px 7px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative; overflow: hidden;
+      transition: color .3s ease;
+    }
+    .nav-download::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--ink);
+      transform: translateY(100%);
+      transition: transform .35s cubic-bezier(.16,1,.3,1);
+    }
+    .nav-download:hover { color: var(--paper); }
+    .nav-download:hover::before { transform: translateY(0); }
+    .nav-download span, .nav-download svg { position: relative; z-index: 1; }
+    .nav-dl-icon { width: 8px; height: 8px; }
+
+
+    /* ── page wrapper ── */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 60px;
+      width: 100%;
+    }
+
+    /* ── panels ── */
+    .panel {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── hero ── */
+    .panel--hero {
+      position: relative;
+    }
+    .hero-inner {
+      padding-top: calc(var(--nav) + 6vh);
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: fadeUp .7s ease .3s forwards;
+    }
+    .hero-name {
+      font-family: var(--disp);
+      font-weight: 400;
+      font-size: clamp(64px, 10vw, 136px);
+      line-height: .88;
+      letter-spacing: -.02em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(.16,1,.3,1) .4s forwards;
+    }
+    .hero-name .italic { font-style: italic; display: block; }
+    .hero-location {
+      margin-top: 28px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--dim);
+      opacity: 0;
+      animation: fadeUp .7s ease .7s forwards;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      opacity: 0;
+      animation: fadeUp .7s ease 1s forwards;
+    }
+    .hero-scroll-line {
+      width: 32px; height: 1px;
+      background: var(--dim);
+      transform-origin: left;
+      animation: growLine 1s ease 1.2s both;
+    }
+
+    /* ── content panels (bio, statement) ── */
+    .panel--bio,
+    .panel--statement,
+    .panel--cv {
+      border-top: 1px solid var(--rule);
+    }
+    .panel--cv {
+      align-items: flex-start;
+      padding-top: calc(var(--nav) + 72px);
+      padding-bottom: 80px;
+    }
+
+    /* panel grid layout */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 0 72px;
+      width: 100%;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .panel-grid.visible { opacity: 1; transform: translateY(0); }
+
+    .panel-label {
+      padding-top: 4px;
+    }
+    .panel-label-num {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .2em;
+      color: var(--dim);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .panel-label-title {
+      font-family: var(--mono);
+      font-size: 8.5px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    /* bio */
+    .bio-tags {
+      font-family: var(--mono);
+      font-size: 8.5px; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--dim);
+      margin-bottom: 24px;
+    }
+    .bio-text {
+      font-size: clamp(16px, 1.5vw, 19px);
+      line-height: 1.85;
+      max-width: 680px;
+    }
+
+    /* statement */
+    .statement-text {
+      font-size: clamp(18px, 1.8vw, 22px);
+      font-style: italic;
+      line-height: 1.72;
+      max-width: 740px;
+    }
+    .statement-text p + p { margin-top: 1.3em; }
+
+    /* cv */
+    .cv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 52px;
+      width: 100%;
+      min-width: 0;
+    }
+    .cv-col { min-width: 0; }
+    .cv-block { margin-bottom: 44px; }
+    .cv-block:last-child { margin-bottom: 0; }
+    .cv-block-title {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .cv-list { list-style: none; }
+    .cv-list li {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 0 20px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(30,43,60,.05);
+    }
+    .cv-list li:last-child { border-bottom: none; }
+    .cv-year {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--dim);
+      padding-top: 2px;
+    }
+    .cv-entry {
+      font-family: var(--serif);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* footer inside cv panel */
+    .panel-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 72px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+    }
+    .footer-txt {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    /* ── animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes growLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* ── responsive ── */
+    @media (max-width: 860px) {
+      .nav { padding: 0 28px; }
+      .nav-contact, .nav-sep { display: none; }
+      .page { padding: 0 28px; }
+      .side-nav { display: none; }
+      .hero-scroll { left: 28px; }
+    }
+    @media (max-width: 640px) {
+      .panel-grid { grid-template-columns: 1fr; gap: 16px 0; }
+      .panel--cv { padding-top: calc(var(--nav) + 40px); }
+      .cv-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a class="nav-name" href="#">Polina Orlova</a>
+    <div class="nav-right">
+      <a class="nav-contact" href="https://instagram.com/orlova_pol" target="_blank" rel="noopener">Instagram</a>
+      <div class="nav-sep"></div>
+      <a class="nav-contact" href="mailto:orlovapolly@gmail.com">orlovapolly@gmail.com</a>
+      <div class="nav-sep"></div>
+      <a class="nav-download" href="POLINA ORLOVA PORTFOLIO 2026.pdf" download>
+        <span>Download PDF</span>
+        <svg class="nav-dl-icon" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3">
+          <line x1="5" y1="0" x2="5" y2="8"/>
+          <polyline points="2,5.5 5,8.5 8,5.5"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+<!-- SCROLL CONTAINER -->
+  <div class="scroll-wrap" id="scrollWrap">
+
+    <!-- 1. HERO -->
+    <section class="panel panel--hero" id="panel-0">
+      <div class="page">
+        <div class="hero-inner">
+          <p class="hero-eyebrow">Ukrainian multidisciplinary artist</p>
+          <h1 class="hero-name">
+            Polina
+            <span class="italic">Orlova</span>
+          </h1>
+          <p class="hero-location">Tbilisi &nbsp;/&nbsp; Georgia &nbsp;·&nbsp; b. 1989</p>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span class="hero-scroll-line"></span>
+        Scroll
+      </div>
+    </section>
+
+    <!-- 2. BIO -->
+    <section class="panel panel--bio" id="panel-1">
+      <div class="page">
+        <div class="panel-grid" data-reveal>
+          <div class="panel-label">
+            <span class="panel-label-num">01</span>
+            <span class="panel-label-title">Bio</span>
+          </div>
+          <div>
+            <p class="bio-tags">Textiles &nbsp;·&nbsp; Installation &nbsp;·&nbsp; Material Transformation</p>
+            <p class="bio-text">
+              Ukrainian multidisciplinary artist working with textiles, installation,
+              and material transformation — including salt, mirror surfaces,
+              and drip-dyeing systems. In her practice, she explores the
+              <em>"architecture of tension"</em> — moments where strict structure meets
+              the unpredictability of the material and the process of decay.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ARTIST STATEMENT -->
+    <section class="panel panel--statement" id="panel-2">
+      <div class="page">
+        <div class="panel-grid" data-reveal>
+          <div class="panel-label">
+            <span class="panel-label-num">02</span>
+            <span class="panel-label-title">Artist<br>Statement</span>
+          </div>
+          <div class="statement-text">
+            <p>
+              My practice explores the tension between constructed structure and the independent will of the material.
+              I create situations in which a work cannot remain static, allowing time, chemical processes, light,
+              or physical stress to alter its form.
+            </p>
+            <p>
+              I often use applied materials and subject them to deliberate damage — bending, cutting, dissolving,
+              or corroding — as a way to release unexpected qualities and generate new, unstable states.
+              Through this process the object shifts from a fixed form to something closer to a condition or event.
+            </p>
+            <p>
+              The viewer encounters a sense of instability, as if the work could change or collapse at any moment.
+              Social context appears only indirectly, reflected in systems of pressure, resistance, and adaptation
+              that shape both materials and the structures surrounding us.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CV -->
+    <section class="panel panel--cv" id="panel-3">
+      <div class="page">
+        <div class="panel-grid" data-reveal>
+          <div class="panel-label">
+            <span class="panel-label-num">03</span>
+            <span class="panel-label-title">CV</span>
+          </div>
+          <div style="min-width:0">
+            <div class="cv-grid">
+
+              <!-- LEFT -->
+              <div class="cv-col">
+                <div class="cv-block">
+                  <p class="cv-block-title">Solo Exhibitions</p>
+                  <ul class="cv-list">
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Tomorrow Has Already Happened, DDD Kunst House, Yerevan</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">The Depth of the Inner World, SKLAD 17 Gallery, St. Petersburg</span></li>
+                    <li><span class="cv-year">2019</span><span class="cv-entry">System, SKLAD 17 Gallery, St. Petersburg</span></li>
+                    <li><span class="cv-year">2016</span><span class="cv-entry">It's All – Not All, Wrong Bite Gallery, Simferopol</span></li>
+                  </ul>
+                </div>
+                <div class="cv-block">
+                  <p class="cv-block-title">Residencies</p>
+                  <ul class="cv-list">
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Castello Art Residency, Umbria, Italy</span></li>
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Sleepover Artist Residency, DDD Kunst House, Yerevan</span></li>
+                    <li><span class="cv-year">2015</span><span class="cv-entry">Residency Program, Vladimir Smirnov and Konstantin Sorokin Foundation, Moscow</span></li>
+                  </ul>
+                </div>
+                <div class="cv-block">
+                  <p class="cv-block-title">Education</p>
+                  <ul class="cv-list">
+                    <li><span class="cv-year">2019</span><span class="cv-entry">New Media Laboratory, New Stage of the Alexandrinsky Theatre, St. Petersburg</span></li>
+                    <li><span class="cv-year">2018</span><span class="cv-entry">School for Young Artists, PRO ARTE, St. Petersburg</span></li>
+                    <li><span class="cv-year">2014–18</span><span class="cv-entry">Stieglitz Academy of Decorative Art, Artistic Textiles, St. Petersburg</span></li>
+                    <li><span class="cv-year">2011–14</span><span class="cv-entry">National Academy of Arts and Architecture, Painting, Crimea</span></li>
+                    <li><span class="cv-year">2006–10</span><span class="cv-entry">Crimean Art College by Samokish, Painting, Simferopol</span></li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- RIGHT -->
+              <div class="cv-col">
+                <div class="cv-block">
+                  <p class="cv-block-title">Group Exhibitions</p>
+                  <ul class="cv-list">
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Utopia, Residency Ortachala / Object Community / Particles Here, Tbilisi</span></li>
+                    <li><span class="cv-year">2025</span><span class="cv-entry">In Good Hands, The Gallery, Tbilisi</span></li>
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Hidden, Castello Art Residency, Umbria, Italy</span></li>
+                    <li><span class="cv-year">2025</span><span class="cv-entry">New Locality, The Gallery (Artnomad curators), Tbilisi</span></li>
+                    <li><span class="cv-year">2024</span><span class="cv-entry">Salt Room, Sister Room Space, Tbilisi</span></li>
+                    <li><span class="cv-year">2023</span><span class="cv-entry">Anseong Art Prism, Anseong, South Korea</span></li>
+                    <li><span class="cv-year">2021</span><span class="cv-entry">The Thirty-Year-Old Generation in Contemporary Russian Art, Marble Palace, St. Petersburg</span></li>
+                    <li><span class="cv-year">2019</span><span class="cv-entry">Ordinary Things, DK Gromov, St. Petersburg</span></li>
+                    <li><span class="cv-year">2019</span><span class="cv-entry">Impulse, Kuryokhin Center for Contemporary Art, St. Petersburg</span></li>
+                    <li><span class="cv-year">2019</span><span class="cv-entry">Levels, Stepan Razin Plant, St. Petersburg</span></li>
+                    <li><span class="cv-year">2018</span><span class="cv-entry">St. Petersburg Biennale of Museum Design</span></li>
+                    <li><span class="cv-year">2018</span><span class="cv-entry">Awakening, Museum of Contemporary Art, Kyiv</span></li>
+                    <li><span class="cv-year">2015</span><span class="cv-entry">Point of Contact, Smirnov &amp; Sorokin Foundation, Moscow</span></li>
+                    <li><span class="cv-year">2014</span><span class="cv-entry">Drip Irrigation, abandoned cinema "Selena", Kolchugino</span></li>
+                    <li><span class="cv-year">2013</span><span class="cv-entry">Crimean Painting, Union of Artists, Kyiv</span></li>
+                  </ul>
+                </div>
+                <div class="cv-block">
+                  <p class="cv-block-title">Fairs &amp; Festivals</p>
+                  <ul class="cv-list">
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Soooon Space Market, Tbilisi</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">Blazarart Young Contemporary Art Fair, Museum of Moscow</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">Soundwalk, multichannel compositions, Vienna</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">Festival of Creepy Distance Interaction, Tallinn</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">Measure of Chaos, performance (Microbiome Orchestra), St. Petersburg</span></li>
+                    <li><span class="cv-year">2019</span><span class="cv-entry">Acousmonium / Multichannel Music Festival, Alexandrinsky Theatre, St. Petersburg</span></li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="panel-footer">
+              <span class="footer-txt">Polina Orlova &nbsp;·&nbsp; Portfolio 2026</span>
+              <span class="footer-txt">Tbilisi, Georgia</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /scroll-wrap -->
+
+  <script>
+    const wrap = document.getElementById('scrollWrap');
+
+    // Reveal on enter
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { root: wrap, threshold: 0.2 });
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
