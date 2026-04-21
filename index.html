@@ -283,12 +283,8 @@
       border-bottom: 1px solid rgba(30,43,60,.05);
     }
     .cv-list li:last-child { border-bottom: none; }
-    .cv-year {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--dim);
-      padding-top: 2px;
-    }
+    .cv-year { display: none; }
+    .cv-list li { grid-template-columns: 1fr; }
     .cv-entry {
       font-family: var(--serif);
       font-size: 14px;
@@ -528,7 +524,7 @@
             </div>
 
             <div class="panel-footer">
-              <span class="footer-txt">Polina Orlova &nbsp;·&nbsp; Portfolio 2026</span>
+              <span class="footer-txt">Polina Orlova</span>
               <div class="footer-contacts">
                 <a class="footer-link" href="https://instagram.com/orlova_pol" target="_blank" rel="noopener">Instagram</a>
                 <span class="footer-sep">·</span>
