@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polina Orlova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:   #1e2b3c;
+      --paper: #ffffff;
+      --dim:   rgba(30,43,60,.42);
+      --rule:  rgba(30,43,60,.12);
+      --mono:  'Syne', sans-serif;
+      --serif: 'Lora', Georgia, serif;
+      --disp:  'Playfair Display', Georgia, serif;
+      --nav:   52px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 999; pointer-events: none;
+      opacity: .018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+    }
+
+    /* cursor */
+    .cursor {
+      display: none;
+      position: fixed;
+      width: 7px; height: 7px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      left: -20px; top: -20px;
+      transform: translate(-50%, -50%);
+      transition: width .18s, height .18s, background .18s, opacity .15s;
+      opacity: 0;
+    }
+    .cursor.hover {
+      width: 24px; height: 24px;
+      background: transparent;
+      border: 1px solid #fff;
+    }
+    @media (pointer: fine) {
+      * { cursor: none !important; }
+      .cursor { display: block; }
+    }
+
+    /* ── nav ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity .25s;
+    }
+    .nav-back:hover { opacity: .6; }
+    .nav-back svg { width: 14px; }
+    .nav-name {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* ── hero ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      background: #0d1117;
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: .72;
+    }
+
+    /* static image fallback */
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: .72;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(13,17,23,.2) 0%,
+        rgba(13,17,23,.1) 40%,
+        rgba(13,17,23,.55) 100%
+      );
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 60px;
+      left: 60px;
+      right: 60px;
+    }
+
+    .hero-title {
+      font-family: var(--disp);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(36px, 5vw, 72px);
+      color: #fff;
+      line-height: 1.05;
+      letter-spacing: -.01em;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp .9s cubic-bezier(.16,1,.3,1) .3s forwards;
+    }
+
+    .hero-meta {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.6);
+      opacity: 0;
+      animation: fadeUp .7s ease .6s forwards;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      right: 60px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      opacity: 0;
+      animation: fadeUp .7s ease .9s forwards;
+    }
+    .hero-scroll-line {
+      width: 28px; height: 1px;
+      background: rgba(255,255,255,.35);
+    }
+
+    /* ── gallery ── */
+    .gallery-section {
+      padding: 80px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 48px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .gallery-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .gallery-count {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .14em;
+      color: var(--dim);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+
+    .gallery-item {
+      cursor: pointer;
+      overflow: hidden;
+      background: #f0ede8;
+      aspect-ratio: 3/2;
+    }
+    .gallery-item.tall { aspect-ratio: 2/3; }
+
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .7s cubic-bezier(.16,1,.3,1), opacity .3s;
+    }
+    .gallery-item:hover img { transform: scale(1.04); }
+
+    /* ── lightbox ── */
+    .lb {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(13,17,23,.97);
+      display: flex; flex-direction: column;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .lb.lb--open { opacity: 1; pointer-events: all; }
+
+    .lb-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px; flex-shrink: 0;
+    }
+    .lb-title {
+      font-family: var(--mono); font-size: 9px; font-weight: 500;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+    }
+    .lb-meta { display: flex; align-items: center; gap: 24px; }
+    .lb-counter {
+      font-family: var(--mono); font-size: 9px; font-weight: 500;
+      letter-spacing: .18em; color: rgba(255,255,255,.3);
+    }
+    .lb-close {
+      font-family: var(--mono); font-size: 9px; font-weight: 500;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.45); background: none; border: none;
+      cursor: pointer; transition: color .2s; padding: 4px 0;
+    }
+    .lb-close:hover { color: #fff; }
+
+    .lb-stage {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      position: relative; padding: 0 72px; min-height: 0;
+    }
+    .lb-img {
+      max-width: 100%; max-height: 100%; object-fit: contain;
+      display: block; opacity: 0; transition: opacity .22s;
+      user-select: none;
+    }
+    .lb-img.lb-img--in { opacity: 1; }
+
+    .lb-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      padding: 16px 20px; color: rgba(255,255,255,.35);
+      transition: color .2s; display: flex; align-items: center;
+    }
+    .lb-btn:hover { color: rgba(255,255,255,.9); }
+    .lb-btn--prev { left: 0; }
+    .lb-btn--next { right: 0; }
+    .lb-btn svg { width: 20px; height: 20px; }
+    .lb-btn[hidden] { display: none; }
+    .lb-footer { height: 32px; flex-shrink: 0; }
+
+    /* ── footer ── */
+    .work-footer {
+      border-top: 1px solid var(--rule);
+      padding: 28px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .work-footer-name {
+      font-family: var(--mono);
+      font-size: 8px; font-weight: 500;
+      letter-spacing: .26em; text-transform: uppercase;
+      color: var(--dim);
+    }
+    .work-footer-back {
+      font-family: var(--mono);
+      font-size: 8px; font-weight: 500;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--dim); text-decoration: none;
+      transition: color .25s;
+    }
+    .work-footer-back:hover { color: var(--ink); }
+
+    /* ── animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 860px) {
+      .nav { padding: 0 28px; }
+      .hero-content { left: 28px; right: 28px; bottom: 48px; }
+      .gallery-section { padding: 56px 28px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .work-footer { padding: 24px 28px; }
+      .lb-stage { padding: 0 48px; }
+    }
+    @media (max-width: 540px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item, .gallery-item.tall { aspect-ratio: 4/3; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="index.html">
+    <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.1">
+      <line x1="13" y1="5" x2="1" y2="5"/>
+      <polyline points="5,1 1,5 5,9"/>
+    </svg>
+    All Works
+  </a>
+  <a class="nav-name" href="index.html">Polina Orlova</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <!-- video or image filled by JS -->
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <p class="hero-meta" id="heroMeta"></p>
+  </div>
+  <div class="hero-scroll">
+    <span class="hero-scroll-line"></span>
+    Scroll
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-section">
+  <div class="gallery-header">
+    <span class="gallery-label" id="galleryLabel">Images</span>
+    <span class="gallery-count" id="galleryCount"></span>
+  </div>
+  <div class="gallery-grid" id="galleryGrid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="work-footer">
+  <span class="work-footer-name">Polina Orlova</span>
+  <a class="work-footer-back" href="index.html">← Back to Portfolio</a>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <div class="lb-header">
+    <span class="lb-title" id="lbTitle"></span>
+    <div class="lb-meta">
+      <span class="lb-counter" id="lbCounter"></span>
+      <button class="lb-close" id="lbClose">Close</button>
+    </div>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-btn lb-btn--prev" id="lbPrev">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2">
+        <polyline points="13,3 7,10 13,17"/>
+      </svg>
+    </button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <button class="lb-btn lb-btn--next" id="lbNext">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2">
+        <polyline points="7,3 13,10 7,17"/>
+      </svg>
+    </button>
+  </div>
+  <div class="lb-footer"></div>
+</div>
+
+<script>
+  const WORKS = {
+    'depth-of-the-inner-voice': { title: 'Depth of the Inner Voice', year: '2025', count: 26, video: true, credits: 'Photo & Video: Roma Renton' },
+    'quiet':                    { title: 'Quiet',                     year: '2025', count: 6,  video: false },
+    'under-the-skin-of-the-garden': { title: 'Under the Skin of the Garden', year: '2025', count: 5, video: false },
+    'choir':                    { title: 'Choir',                     year: '2025', count: 6,  video: false },
+    'chamber-of-memory':        { title: 'Chamber of Memory',         year: '2025', count: 1,  video: false },
+    'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true,  credits: 'Video: Daria Vengerskaya, Merry Manyface · Photo: Liza New Fire' },
+    'depth-of-the-inner-world': { title: 'Depth of the Inner World',  year: '2020', count: 10, video: false, credits: 'Photo: Roma Renton' },
+    'system':                   { title: 'System',                    year: '2019–2025', count: 23, video: true, credits: 'Photo & Video: Roma Renton' },
+  };
+
+  // Get slug from URL
+  const slug = new URLSearchParams(location.search).get('s') || 'depth-of-the-inner-voice';
+  const work = WORKS[slug] || WORKS['depth-of-the-inner-voice'];
+
+  // Update page title
+  document.title = `${work.title} — Polina Orlova`;
+
+  // Hero
+  document.getElementById('heroTitle').textContent = work.title;
+  const metaParts = [work.year];
+  if (work.credits) metaParts.push(work.credits);
+  document.getElementById('heroMeta').textContent = metaParts.join('  ·  ');
+
+  // Hero media
+  const hero = document.getElementById('hero');
+  if (work.video) {
+    const vid = document.createElement('video');
+    vid.className = 'hero-media';
+    vid.src = `works/video/${slug}/hero.mp4`;
+    vid.autoplay = true;
+    vid.muted = true;
+    vid.loop = true;
+    vid.playsInline = true;
+    vid.setAttribute('playsinline', '');
+    hero.prepend(vid);
+  } else {
+    const img = document.createElement('img');
+    img.className = 'hero-img';
+    img.src = `works/images/${slug}/01.jpg`;
+    img.alt = work.title;
+    hero.prepend(img);
+  }
+
+  // Gallery
+  function imgUrl(n) {
+    return `works/images/${slug}/${String(n).padStart(2,'0')}.jpg`;
+  }
+
+  const grid = document.getElementById('galleryGrid');
+  document.getElementById('galleryCount').textContent = `${work.count} images`;
+
+  for (let i = 1; i <= work.count; i++) {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    const img = document.createElement('img');
+    img.src = imgUrl(i);
+    img.alt = `${work.title} — ${i}`;
+    img.loading = 'lazy';
+    item.appendChild(img);
+    item.addEventListener('click', () => openLb(i - 1));
+    item.addEventListener('mouseenter', () => cur.classList.add('hover'));
+    item.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+    grid.appendChild(item);
+  }
+
+  // Lightbox
+  const lbEl      = document.getElementById('lb');
+  const lbImg     = document.getElementById('lbImg');
+  const lbTitle   = document.getElementById('lbTitle');
+  const lbCounter = document.getElementById('lbCounter');
+  const lbClose   = document.getElementById('lbClose');
+  const lbPrev    = document.getElementById('lbPrev');
+  const lbNext    = document.getElementById('lbNext');
+  let lbIdx = 0;
+
+  lbTitle.textContent = work.title;
+
+  function openLb(idx) {
+    lbIdx = idx; showLb();
+    lbEl.classList.add('lb--open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() {
+    lbEl.classList.remove('lb--open');
+    document.body.style.overflow = '';
+    lbImg.classList.remove('lb-img--in');
+  }
+  function showLb() {
+    lbCounter.textContent = `${lbIdx + 1} / ${work.count}`;
+    lbPrev.hidden = lbIdx === 0;
+    lbNext.hidden = lbIdx === work.count - 1;
+    lbImg.classList.remove('lb-img--in');
+    const url = imgUrl(lbIdx + 1);
+    const tmp = new Image();
+    tmp.onload = () => { lbImg.src = url; requestAnimationFrame(() => lbImg.classList.add('lb-img--in')); };
+    tmp.src = url;
+  }
+  function navigate(d) { const n = lbIdx + d; if (n >= 0 && n < work.count) { lbIdx = n; showLb(); } }
+
+  lbClose.addEventListener('click', closeLb);
+  lbPrev.addEventListener('click', () => navigate(-1));
+  lbNext.addEventListener('click', () => navigate(1));
+  lbEl.addEventListener('click', e => { if (e.target === lbEl) closeLb(); });
+  document.addEventListener('keydown', e => {
+    if (!lbEl.classList.contains('lb--open')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowRight') navigate(1);
+    if (e.key === 'ArrowLeft') navigate(-1);
+  });
+  let tx = null;
+  lbEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+  lbEl.addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) navigate(dx < 0 ? 1 : -1);
+    tx = null;
+  });
+
+  // Cursor
+  const cur = document.getElementById('cursor');
+  let cv = false;
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+    if (!cv) { cur.style.opacity = '1'; cv = true; }
+  });
+  document.addEventListener('mouseleave', () => { cur.style.opacity = '0'; cv = false; });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+  });
+</script>
+</body>
+</html>
