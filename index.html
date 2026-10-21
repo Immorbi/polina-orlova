@@ -273,6 +273,17 @@
       font-size: 11px; letter-spacing: .18em;
       text-transform: uppercase; color: var(--ink);
       margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 0;
+    }
+    .bio-tags span { white-space: nowrap; }
+    .bio-tags span:not(:last-child)::after {
+      content: '·';
+      letter-spacing: 0;
+      margin: 0 12px;
+      color: var(--dim);
     }
     .bio-text {
       font-size: clamp(16px, 1.5vw, 19px);
@@ -627,7 +638,7 @@
             <span class="panel-label-title">Bio</span>
           </div>
           <div>
-            <p class="bio-tags">Textiles &nbsp;·&nbsp; Installation &nbsp;·&nbsp; Material Transformation</p>
+            <p class="bio-tags"><span>Textiles</span><span>Installation</span><span>Material Transformation</span></p>
             <p class="bio-text">
               Ukrainian multidisciplinary artist working with textiles, installation,
               and material transformation — including salt, mirror surfaces,
