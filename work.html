@@ -201,9 +201,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 48px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--rule);
+      margin-bottom: 36px;
     }
 
     .gallery-label {
@@ -345,11 +343,10 @@
 
       /* Gallery horizontal filmstrip */
       .gallery-section {
-        padding: 36px 0 56px;
+        padding: 20px 0 48px;
       }
       .gallery-header {
-        padding: 0 20px;
-        margin-bottom: 20px;
+        display: none;
       }
       .gallery-grid {
         display: flex;
@@ -358,13 +355,13 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         gap: 0 3px;
-        padding: 0 20px 20px;
+        padding: 0 20px 0;
         scrollbar-width: none;
         -ms-overflow-style: none;
       }
       .gallery-grid::-webkit-scrollbar { display: none; }
       .gallery-item {
-        flex: 0 0 78vw;
+        flex: 0 0 82vw;
         scroll-snap-align: start;
         aspect-ratio: 3/4;
         overflow: hidden;
@@ -378,7 +375,13 @@
 
       .lb-stage { padding: 0 28px; }
       .lb-header { padding: 14px 20px; }
-      .work-footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
+      .work-footer {
+        border-top: none;
+        padding: 24px 20px;
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+      }
     }
   </style>
 </head>
