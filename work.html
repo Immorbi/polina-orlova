@@ -478,7 +478,7 @@
   document.getElementById('heroTitle').textContent = work.title;
   const metaParts = [work.year];
   if (work.credits) metaParts.push(work.credits);
-  document.getElementById('heroMeta').textContent = metaParts.join('  ·  ');
+  document.getElementById('heroMeta').textContent = metaParts.join('   ');
 
   // Hero media
   const hero = document.getElementById('hero');
