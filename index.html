@@ -36,20 +36,21 @@
       display: none;
       position: fixed;
       width: 7px; height: 7px;
-      background: var(--ink);
+      background: #fff;
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
       left: -20px; top: -20px;
       transform: translate(-50%, -50%);
-      transition: width .18s ease, height .18s ease, background .18s ease, opacity .15s ease;
+      transition: width .18s ease, height .18s ease, opacity .15s ease;
       will-change: left, top;
       opacity: 0;
+      mix-blend-mode: difference;
     }
     .cursor.hover {
       width: 24px; height: 24px;
       background: transparent;
-      border: 1px solid var(--ink);
+      border: 1px solid #fff;
     }
     @media (pointer: fine) {
       * { cursor: none !important; }
