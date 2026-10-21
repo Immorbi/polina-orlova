@@ -482,6 +482,7 @@
 
   // Lightbox
   const lbEl      = document.getElementById('lb');
+  const lbStage   = lbEl.querySelector('.lb-stage');
   const lbImg     = document.getElementById('lbImg');
   const lbTitle   = document.getElementById('lbTitle');
   const lbCounter = document.getElementById('lbCounter');
@@ -517,7 +518,11 @@
   lbClose.addEventListener('click', closeLb);
   lbPrev.addEventListener('click', () => navigate(-1));
   lbNext.addEventListener('click', () => navigate(1));
-  lbEl.addEventListener('click', e => { if (e.target === lbEl) closeLb(); });
+  lbStage.addEventListener('click', e => {
+    if (e.target === lbImg) return;
+    if (e.target.closest && e.target.closest('.lb-btn')) return;
+    closeLb();
+  });
   document.addEventListener('keydown', e => {
     if (!lbEl.classList.contains('lb--open')) return;
     if (e.key === 'Escape') closeLb();
