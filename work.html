@@ -233,13 +233,10 @@
       cursor: pointer;
       overflow: hidden;
       background: #f0ede8;
-      aspect-ratio: 3/2;
     }
-    .gallery-item.tall { aspect-ratio: 2/3; }
 
     .gallery-item img {
-      width: 100%; height: 100%;
-      object-fit: cover;
+      width: 100%; height: auto;
       display: block;
       transition: transform .7s cubic-bezier(.16,1,.3,1), opacity .3s;
     }
@@ -342,7 +339,7 @@
     }
     @media (max-width: 540px) {
       .gallery-grid { grid-template-columns: 1fr; }
-      .gallery-item, .gallery-item.tall { aspect-ratio: 4/3; }
+      .gallery-item img { width: 100%; height: auto; }
     }
   </style>
 </head>
@@ -418,14 +415,14 @@
 
 <script>
   const WORKS = {
-    'depth-of-the-inner-voice': { title: 'Depth of the Inner Voice', year: '2025', count: 26, video: true, credits: 'Photo & Video: Roma Renton' },
+    'depth-of-the-inner-voice': { title: 'Depth of the Inner Voice', year: '2025', count: 23, video: true, credits: 'Photo & Video: Roma Renton' },
     'quiet':                    { title: 'Quiet',                     year: '2025', count: 6,  video: false },
     'under-the-skin-of-the-garden': { title: 'Under the Skin of the Garden', year: '2025', count: 5, video: false },
     'choir':                    { title: 'Choir',                     year: '2025', count: 6,  video: false },
     'chamber-of-memory':        { title: 'Chamber of Memory',         year: '2025', count: 1,  video: false },
     'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true,  credits: 'Video: Daria Vengerskaya, Merry Manyface · Photo: Liza New Fire' },
     'depth-of-the-inner-world': { title: 'Depth of the Inner World',  year: '2020', count: 10, video: false, credits: 'Photo: Roma Renton' },
-    'system':                   { title: 'System',                    year: '2019–2025', count: 23, video: true, credits: 'Photo & Video: Roma Renton' },
+    'system':                   { title: 'System',                    year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton' },
   };
 
   // Get slug from URL
