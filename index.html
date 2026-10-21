@@ -279,12 +279,7 @@
       gap: 6px 0;
     }
     .bio-tags span { white-space: nowrap; }
-    .bio-tags span:not(:last-child)::after {
-      content: '·';
-      letter-spacing: 0;
-      margin: 0 12px;
-      color: var(--dim);
-    }
+    .bio-tags span + span { margin-left: 28px; }
     .bio-text {
       font-size: clamp(16px, 1.5vw, 19px);
       line-height: 1.85;
