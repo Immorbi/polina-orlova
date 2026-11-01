@@ -100,11 +100,11 @@
       gap: 10px;
       color: #fff;
       text-decoration: none;
-      font-family: 'Figtree', sans-serif;
-      font-size: 11px;
+      font-family: var(--serif);
+      font-size: 14px;
       font-weight: 400;
-      letter-spacing: .14em;
-      text-transform: uppercase;
+      letter-spacing: 0;
+      text-transform: none;
     }
     .nav-logo {
       width: 18px;
@@ -230,22 +230,29 @@
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 3px;
+    }
+
+    /* full-width: 1, 4, 5, 8, 9… → editorial rhythm */
+    .gallery-item:nth-child(4n+1),
+    .gallery-item:nth-child(4n) {
+      grid-column: 1 / -1;
     }
 
     .gallery-item {
       cursor: pointer;
       overflow: hidden;
-      background: #f0ede8;
+      background: #111;
     }
 
     .gallery-item img {
       width: 100%; height: auto;
       display: block;
-      transition: transform .7s cubic-bezier(.16,1,.3,1), opacity .3s;
+      transition: transform .8s cubic-bezier(.16,1,.3,1), opacity .3s;
     }
-    .gallery-item:hover img { transform: scale(1.04); }
+
+    .gallery-item:hover img { transform: scale(1.03); }
 
     /* ── lightbox ── */
     .lb {
