@@ -159,6 +159,7 @@
     .hero {
       position: relative;
       height: 100vh;
+      height: 100svh;   /* visible area on phones, excluding browser bars */
       overflow: hidden;
       background: #0d1117;
     }
@@ -523,7 +524,7 @@
 <body>
 
 <!-- FLOATING NEXT WORK PILL -->
-<a class="next-pill" id="nextPill" href="#">
+<a class="next-pill hidden" id="nextPill" href="#">
   <div class="next-pill-text">
     <span class="next-pill-label">Next Work</span>
     <span class="next-pill-title" id="nextPillTitle"></span>
@@ -816,15 +817,15 @@
     navEl.classList.toggle('nav--scrolled', window.scrollY > heroHeightPx * 0.85);
   }, { passive: true });
 
-  // Floating next-work pill — hide when big footer block is visible
+  // Floating next-work pill — only after the hero, hidden again when the big next-work block is visible
   const pill = document.getElementById('nextPill');
   const nextSection = document.querySelector('.next-work');
-  if (pill && nextSection) {
-    const io2 = new IntersectionObserver(entries => {
-      pill.classList.toggle('hidden', entries[0].isIntersecting);
-    }, { threshold: 0.1 });
-    io2.observe(nextSection);
-  }
+  let pastHero = false, footerVisible = false;
+  const syncPill = () => pill.classList.toggle('hidden', !pastHero || footerVisible);
+  new IntersectionObserver(e => { pastHero = !e[0].isIntersecting; syncPill(); }, { threshold: 0.35 })
+    .observe(document.getElementById('hero'));
+  new IntersectionObserver(e => { footerVisible = e[0].isIntersecting; syncPill(); }, { threshold: 0.1 })
+    .observe(nextSection);
 </script>
 </body>
 </html>
