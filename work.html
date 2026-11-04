@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Polina Orlova</title>
+  <title>polinaorlova</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -236,25 +236,34 @@
     }
 
     .gallery-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 3px;
     }
 
-    /* full-width: 1, 4, 5, 8, 9… → editorial rhythm */
-    .gallery-item:nth-child(4n+1),
-    .gallery-item:nth-child(4n) {
-      grid-column: 1 / -1;
+    /* rows: one full-width photo, or a pair scaled to the same height */
+    .gallery-row {
+      display: flex;
+      gap: 3px;
     }
 
     .gallery-item {
       cursor: pointer;
       overflow: hidden;
-      background: #111;
+      background: #f0ede8;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .gallery-row--solo-portrait .gallery-item {
+      flex: 0 1 auto !important;
+      width: 66%;
+      margin: 0 auto;
     }
 
     .gallery-item img {
-      width: 100%; height: auto;
+      width: 100%; height: 100%;
+      object-fit: cover;
       display: block;
       transition: transform .8s cubic-bezier(.16,1,.3,1), opacity .3s;
     }
@@ -437,7 +446,6 @@
       .nav { padding: 0 28px; }
       .hero-content { left: 28px; right: 28px; bottom: 48px; }
       .gallery-section { padding: 56px 28px; }
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
       .work-footer { padding: 24px 28px; }
       .lb-stage { padding: 0 48px; }
     }
@@ -467,8 +475,10 @@
         -ms-overflow-style: none;
       }
       .gallery-grid::-webkit-scrollbar { display: none; }
+      .gallery-row { display: contents; }
       .gallery-item {
-        flex: 0 0 82vw;
+        flex: 0 0 82vw !important;
+        aspect-ratio: 3/4 !important;
         scroll-snap-align: start;
         aspect-ratio: 3/4;
         overflow: hidden;
@@ -614,7 +624,7 @@
   const work = WORKS[slug] || WORKS['depth-of-the-inner-voice'];
 
   // Update page title
-  document.title = `${work.title} — Polina Orlova`;
+  document.title = `${work.title} — polinaorlova`;
 
   // Light hero variant
   if (work.lightHero) {
@@ -673,17 +683,48 @@
   const grid = document.getElementById('galleryGrid');
   document.getElementById('galleryCount').textContent = `${work.count} images`;
 
-  for (let i = 1; i <= work.count; i++) {
+  function makeItem(i, ratio) {
     const item = document.createElement('div');
     item.className = 'gallery-item';
+    item.style.flexGrow = ratio;          // widths ∝ ratio → equal heights in a row
+    item.style.aspectRatio = ratio;
     const img = document.createElement('img');
     img.src = imgUrl(i);
     img.alt = `${work.title} — ${i}`;
     img.loading = 'lazy';
     item.appendChild(img);
     item.addEventListener('click', () => openLb(i - 1));
-    grid.appendChild(item);
+    return item;
   }
+
+  function imgRatio(i) {
+    return new Promise(res => {
+      const t = new Image();
+      t.onload = () => res(t.naturalWidth / t.naturalHeight || 1.5);
+      t.onerror = () => res(1.5);
+      t.src = imgUrl(i);
+    });
+  }
+
+  // Layout: first photo full width; then alternate full / pair.
+  // A pair is only made from two photos of the same orientation, so neither gets tiny.
+  Promise.all(Array.from({ length: work.count }, (_, k) => imgRatio(k + 1))).then(ratios => {
+    const portrait = r => r < 1;
+    let i = 0, lastWasPair = true;
+    while (i < ratios.length) {
+      const row = document.createElement('div');
+      row.className = 'gallery-row';
+      const canPair = i + 1 < ratios.length && !lastWasPair &&
+                      portrait(ratios[i]) === portrait(ratios[i + 1]);
+      const n = canPair ? 2 : 1;
+      for (let k = 0; k < n; k++) row.appendChild(makeItem(i + k + 1, ratios[i + k]));
+      grid.appendChild(row);
+      lastWasPair = canPair;
+      // a lone portrait would be huge at full width — cap its size
+      if (n === 1 && portrait(ratios[i])) row.classList.add('gallery-row--solo-portrait');
+      i += n;
+    }
+  });
 
   // Lightbox
   const lbEl      = document.getElementById('lb');
