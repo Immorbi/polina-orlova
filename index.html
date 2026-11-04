@@ -179,8 +179,8 @@
     /* statement panel — taller so text scrolls freely before snapping */
     .panel--statement {
       align-items: flex-start;
-      padding-top: calc(var(--nav) + 18vh);
-      padding-bottom: 18vh;
+      padding-top: calc(var(--nav) + 10vh);
+      padding-bottom: 12vh;
       min-height: auto;
     }
 
@@ -487,6 +487,7 @@
     }
     @media (max-width: 640px) {
       .panel-grid { grid-template-columns: 1fr; gap: 16px 0; }
+      .panel--statement { padding-top: calc(var(--nav) + 32px); padding-bottom: 48px; }
       /* CV peeks in under the works carousel; snap lands just below the nav */
       .panel--cv { padding-top: 28px; scroll-margin-top: var(--nav); }
       .cv-grid { grid-template-columns: 1fr; }
