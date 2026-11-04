@@ -32,31 +32,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── cursor ── */
-    .cursor {
-      display: none;
-      position: fixed;
-      width: 7px; height: 7px;
-      background: #fff;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      left: -20px; top: -20px;
-      transform: translate(-50%, -50%);
-      transition: width .18s ease, height .18s ease, opacity .15s ease;
-      will-change: left, top;
-      opacity: 0;
-      mix-blend-mode: difference;
-    }
-    .cursor.hover {
-      width: 24px; height: 24px;
-      background: transparent;
-      border: 1px solid #fff;
-    }
-    @media (pointer: fine) {
-      * { cursor: none !important; }
-      .cursor { display: block; }
-    }
 
     /* grain */
     body::after {
@@ -185,27 +160,6 @@
       color: var(--dim);
       opacity: 0;
       animation: fadeUp .7s ease .7s forwards;
-    }
-    .hero-scroll {
-      position: absolute;
-      bottom: 32px;
-      left: 60px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: var(--mono);
-      font-size: 8px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--dim);
-      opacity: 0;
-      animation: fadeUp .7s ease 1s forwards;
-    }
-    .hero-scroll-line {
-      width: 32px; height: 1px;
-      background: var(--dim);
-      transform-origin: left;
-      animation: growLine 1s ease 1.2s both;
     }
 
     /* ── content panels (bio, statement) ── */
@@ -517,8 +471,7 @@
       .nav-contact, .nav-sep { display: none; }
       .page { padding: 0 28px; }
       .side-nav { display: none; }
-      .hero-scroll { left: 28px; }
-      .lb-stage { padding: 0 48px; }
+.lb-stage { padding: 0 48px; }
     }
     @media (max-width: 640px) {
       .panel-grid { grid-template-columns: 1fr; gap: 16px 0; }
@@ -574,7 +527,6 @@
     </div>
   </nav>
 
-<div class="cursor" id="cursor"></div>
 
 <!-- SCROLL CONTAINER -->
   <div class="scroll-wrap" id="scrollWrap">
@@ -588,10 +540,6 @@
             <span class="italic">Orlova</span>
           </h1>
         </div>
-      </div>
-      <div class="hero-scroll">
-        <span class="hero-scroll-line"></span>
-        Scroll
       </div>
     </section>
 
@@ -810,20 +758,6 @@
       });
     })();
 
-    // custom cursor
-    const cur = document.getElementById('cursor');
-    let cursorVisible = false;
-    document.addEventListener('mousemove', e => {
-      cur.style.left = e.clientX + 'px';
-      cur.style.top  = e.clientY + 'px';
-      if (!cursorVisible) { cur.style.opacity = '1'; cursorVisible = true; }
-    });
-    document.addEventListener('mouseleave', () => { cur.style.opacity = '0'; cursorVisible = false; });
-    document.addEventListener('mouseenter', () => { if (cursorVisible) cur.style.opacity = '1'; });
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => cur.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
-    });
 
     // ── Works data ──
     const WORKS = [
@@ -853,8 +787,7 @@
         <p class="work-card-title">${w.title}</p>
         <p class="work-card-meta">${w.year}</p>`;
       btn.addEventListener('click', () => location.href = `work.html?s=${w.slug}`);
-      btn.addEventListener('mouseenter', () => cur.classList.add('hover'));
-      btn.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+
       grid.appendChild(btn);
     });
 
