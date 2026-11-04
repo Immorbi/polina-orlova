@@ -676,6 +676,10 @@
     .vp--muted .vp-btn .ico-muted { display: block; }
     .vp--muted .vp-btn .ico-unmuted { display: none; }
     .vp--silent #vpSound { display: none; }
+    /* controls fade out while the video plays, come back on tap / mouse move */
+    .vp-bar, .vp-progress { transition: opacity .35s ease; }
+    .vp--idle .vp-bar, .vp--idle .vp-progress { opacity: 0; pointer-events: none; }
+    .vp--idle { cursor: none; }
 
     /* video tile in the gallery */
     .gallery-item--video { position: relative; background: #111; }
@@ -955,6 +959,8 @@
       document.documentElement.classList.remove('lb-lock');
       document.body.style.overflow = '';
       vpVideo.pause();
+      clearTimeout(idleTimer);
+      vp.classList.remove('vp--idle');
       vid.play().catch(() => {});
     };
     document.getElementById('heroPlay').addEventListener('click', openVp);
@@ -963,7 +969,23 @@
       vpVideo.muted = !vpVideo.muted;
       vp.classList.toggle('vp--muted', vpVideo.muted);
     });
-    vpVideo.addEventListener('click', () => vpVideo.paused ? vpVideo.play() : vpVideo.pause());
+    // auto-hide controls
+    let idleTimer = null;
+    const showControls = () => {
+      vp.classList.remove('vp--idle');
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => { if (!vpVideo.paused) vp.classList.add('vp--idle'); }, 2500);
+    };
+    vpVideo.addEventListener('click', () => {
+      // first tap only reveals the controls; a tap while they're visible pauses / resumes
+      if (vp.classList.contains('vp--idle')) { showControls(); return; }
+      vpVideo.paused ? vpVideo.play() : vpVideo.pause();
+      showControls();
+    });
+    vp.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') showControls(); });
+    vpVideo.addEventListener('play', showControls);
+    vpVideo.addEventListener('pause', () => { clearTimeout(idleTimer); vp.classList.remove('vp--idle'); });
+    vp.querySelectorAll('.vp-btn').forEach(b => b.addEventListener('click', showControls));
     vpVideo.addEventListener('timeupdate', () => {
       if (vpVideo.duration) vpProgress.style.width = (vpVideo.currentTime / vpVideo.duration * 100) + '%';
     });
