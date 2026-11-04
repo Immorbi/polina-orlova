@@ -499,12 +499,15 @@
       }
       .gallery-grid::-webkit-scrollbar { display: none; }
       .gallery-row { display: contents; }
-      .gallery-row--solo-portrait .gallery-item { flex: 0 0 82vw !important; width: auto; margin: 0; }
+      /* filmstrip: every photo in its own proportions, one common height
+         (very wide shots are capped to the screen width) */
+      .gallery-grid { align-items: center; }
+      .gallery-row--solo-portrait .gallery-item,
       .gallery-item {
-        flex: 0 0 82vw !important;
-        aspect-ratio: 3/4 !important;
+        flex: 0 0 auto !important;
+        width: min(90vw, calc(66vw * var(--r, 1)));
+        margin: 0;
         scroll-snap-align: start;
-        aspect-ratio: 3/4;
         overflow: hidden;
         background: #f0ede8;
       }
@@ -524,9 +527,42 @@
         text-align: center;
       }
     }
+
+    /* ── back to top ── */
+    .to-top {
+      position: fixed;
+      right: 40px;
+      bottom: 40px;
+      z-index: 210;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      border: 1px solid var(--rule);
+      background: rgba(255,255,255,.82);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      color: var(--ink);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity .35s ease, transform .35s ease, background-color .25s;
+    }
+    .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+    .to-top:hover { background: #fff; }
+    .to-top svg { width: 14px; height: 14px; }
+    @media (max-width: 768px) {
+      .to-top { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 40px; height: 40px; }
+    }
+
+    /* on work pages sit above the Next Work pill */
+    @media (min-width: 769px) { .to-top { right: 60px; bottom: 118px; } }
   </style>
 </head>
 <body>
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.1"><line x1="7" y1="13" x2="7" y2="1"/><polyline points="2,6 7,1 12,6"/></svg>
+</button>
 
 <!-- FLOATING NEXT WORK PILL -->
 <a class="next-pill hidden" id="nextPill" href="#">
@@ -710,6 +746,7 @@
     item.className = 'gallery-item';
     item.style.flexGrow = ratio;          // widths ∝ ratio → equal heights in a row
     item.style.aspectRatio = ratio;
+    item.style.setProperty('--r', ratio);
     const img = document.createElement('img');
     img.src = imgUrl(i);
     img.alt = `${work.title} — ${i}`;
@@ -834,6 +871,13 @@
     .observe(document.getElementById('hero'));
   new IntersectionObserver(e => { footerVisible = e[0].isIntersecting; syncPill(); }, { threshold: 0.1 })
     .observe(nextSection);
+
+  // back to top
+  const toTop = document.getElementById('toTop');
+  const syncTop = () => toTop.classList.toggle('show', window.scrollY > innerHeight * .8);
+  window.addEventListener('scroll', syncTop, { passive: true });
+  syncTop();
+  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 </body>
 </html>
