@@ -104,7 +104,7 @@
       gap: 6px;
       transition: color .25s ease;
     }
-    .nav-contact:hover { color: var(--ink); }
+    @media (hover: hover) { .nav-contact:hover { color: var(--ink); } }
     .nav-sep { width: 1px; height: 14px; background: var(--rule); }
 
 
@@ -298,7 +298,7 @@
       text-decoration: none;
       transition: color .25s;
     }
-    .footer-link:hover { color: var(--ink); }
+    @media (hover: hover) { .footer-link:hover { color: var(--ink); } }
     .footer-icon {
       display: flex;
       align-items: center;
@@ -307,7 +307,7 @@
       color: var(--dim);
       transition: color .25s;
     }
-    .footer-icon:hover { color: var(--ink); }
+    @media (hover: hover) { .footer-icon:hover { color: var(--ink); } }
     .footer-icon svg { width: 18px; height: 18px; }
     .footer-sep {
       font-family: var(--mono);
@@ -383,7 +383,7 @@
       flex-direction: column;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .3s ease;
+      transition: opacity .25s cubic-bezier(.23,1,.32,1);
     }
     .lb.lb--open { opacity: 1; pointer-events: all; }
 
@@ -424,7 +424,7 @@
       transition: color .2s;
       padding: 4px 0;
     }
-    .lb-close:hover { color: #fff; }
+    @media (hover: hover) { .lb-close:hover { color: #fff; } }
 
     .lb-stage {
       flex: 1;
@@ -460,7 +460,7 @@
       display: flex;
       align-items: center;
     }
-    .lb-btn:hover { color: rgba(255,255,255,.9); }
+    @media (hover: hover) { .lb-btn:hover { color: rgba(255,255,255,.9); } }
     .lb-btn--prev { left: 0; }
     .lb-btn--next { right: 0; }
     .lb-btn svg { width: 20px; height: 20px; }
@@ -554,7 +554,7 @@
       transition: opacity .35s ease, transform .35s ease, background-color .25s;
     }
     .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
-    .to-top:hover { background: #fff; }
+    @media (hover: hover) { .to-top:hover { background: #fff; } }
     .to-top svg { width: 14px; height: 14px; }
     @media (max-width: 768px) {
       .to-top { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 40px; height: 40px; }

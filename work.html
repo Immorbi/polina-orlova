@@ -130,7 +130,7 @@
       gap: 10px;
       transition: color .4s ease, opacity .25s;
     }
-    .nav-back:hover { opacity: .6; }
+    @media (hover: hover) { .nav-back:hover { opacity: .6; } }
     .nav-back svg { width: 14px; }
     .nav-name {
       display: flex;
@@ -296,7 +296,7 @@
       background: #0d1117;
       display: flex; flex-direction: column;
       opacity: 0; pointer-events: none;
-      transition: opacity .3s ease;
+      transition: opacity .25s cubic-bezier(.23,1,.32,1);
     }
     .lb.lb--open { opacity: 1; pointer-events: all; }
     /* iOS Safari: cover the area behind the browser bars too, keep content in the visible part */
@@ -353,6 +353,7 @@
       color: rgba(255,255,255,.45);
     }
     .lb-meta { display: flex; align-items: center; gap: 24px; }
+    .lb-counter { font-variant-numeric: tabular-nums; }
     .lb-counter {
       font-family: var(--mono); font-size: 9px; font-weight: 500;
       letter-spacing: .18em; color: rgba(255,255,255,.3);
@@ -363,7 +364,7 @@
       color: rgba(255,255,255,.45); background: none; border: none;
       cursor: pointer; transition: color .2s; padding: 15px; margin: -15px;
     }
-    .lb-close:hover { color: #fff; }
+    @media (hover: hover) { .lb-close:hover { color: #fff; } }
 
     .lb-stage {
       flex: 1; display: flex; align-items: center; justify-content: center;
@@ -383,7 +384,7 @@
       padding: 16px 20px; color: rgba(255,255,255,.35);
       transition: color .2s; display: flex; align-items: center;
     }
-    .lb-btn:hover { color: rgba(255,255,255,.9); }
+    @media (hover: hover) { .lb-btn:hover { color: rgba(255,255,255,.9); } }
     .lb-btn--prev { left: 0; }
     .lb-btn--next { right: 0; }
     .lb-btn svg { width: 20px; height: 20px; }
@@ -404,7 +405,7 @@
       color: rgba(255,255,255,.35);
       transition: color .2s;
     }
-    .lb-nw:hover { color: rgba(255,255,255,.85); }
+    @media (hover: hover) { .lb-nw:hover { color: rgba(255,255,255,.85); } }
     .lb-nw[hidden] { display: none; }
     .lb-nw-text { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .lb-nw-label {
@@ -447,7 +448,7 @@
       color: var(--dim); text-decoration: none;
       transition: color .25s;
     }
-    .work-footer-back:hover { color: var(--ink); }
+    @media (hover: hover) { .work-footer-back:hover { color: var(--ink); } }
 
     /* ── light hero variant ── */
     .hero--light .hero-overlay {
@@ -476,7 +477,7 @@
       gap: 24px;
       transition: opacity .25s;
     }
-    .next-work-link:hover { opacity: .6; }
+    @media (hover: hover) { .next-work-link:hover { opacity: .6; } }
     .next-work-left { display: flex; flex-direction: column; gap: 8px; }
     .next-work-label {
       font-family: var(--sans);
@@ -592,7 +593,7 @@
       transition: opacity .35s ease, transform .35s ease, background-color .25s;
     }
     .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
-    .to-top:hover { background: #fff; }
+    @media (hover: hover) { .to-top:hover { background: #fff; } }
     .to-top svg { width: 14px; height: 14px; }
     @media (max-width: 768px) {
       .to-top { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 40px; height: 40px; }
@@ -638,7 +639,7 @@
       background: #000;
       display: flex; align-items: center; justify-content: center;
       opacity: 0; pointer-events: none;
-      transition: opacity .3s ease;
+      transition: opacity .25s cubic-bezier(.23,1,.32,1);
     }
     @supports (height: 100lvh) {
       .vp { inset: auto; top: 0; left: 0; right: 0; height: 100lvh; padding-bottom: calc(100lvh - 100svh); }
@@ -659,7 +660,7 @@
       display: flex; align-items: center; justify-content: center;
       transition: background-color .25s, border-color .25s;
     }
-    .vp-btn:hover { background: rgba(255,255,255,.12); border-color: #fff; }
+    @media (hover: hover) { .vp-btn:hover { background: rgba(255,255,255,.12); border-color: #fff; } }
     .vp-btn svg { width: 18px; height: 18px; }
     .vp-btn .ico-muted { display: none; }
     .vp--muted .vp-btn .ico-muted { display: block; }
@@ -680,6 +681,8 @@
     }
     .vp-paused-icon svg { width: 24px; height: 24px; margin-left: 3px; }
     .vp--paused .vp-paused-icon { opacity: 1; transform: none; }
+
+    .gallery-item:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
 
     /* video tile in the gallery */
     .gallery-item--video { position: relative; background: #111; }
@@ -946,7 +949,10 @@
     const vpProgress = document.getElementById('vpProgress');
     vpVideo.src = vid.src;
     if (!work.sound) vp.classList.add('vp--silent');
+    let vpReturnFocus = null;
     openVp = () => {
+      vpReturnFocus = document.activeElement;
+      setTimeout(() => document.getElementById('vpClose').focus({ preventScroll: true }), 50);
       vid.pause();
       vpVideo.currentTime = 0;
       vpVideo.muted = true;
@@ -958,6 +964,7 @@
       vpVideo.play().catch(() => { vpVideo.muted = true; vp.classList.add('vp--muted'); vpVideo.play(); });
     };
     const closeVp = () => {
+      if (vpReturnFocus && vpReturnFocus.focus) vpReturnFocus.focus({ preventScroll: true });
       vp.classList.remove('vp--open');
       document.documentElement.classList.remove('lb-lock');
       document.body.style.overflow = '';
@@ -1021,6 +1028,10 @@
     img.loading = 'lazy';
     item.appendChild(img);
     item.addEventListener('click', () => openLb(i - 1));
+    item.tabIndex = 0;
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', `Open photo ${i} of ${work.count}`);
+    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(i - 1); } });
     return item;
   }
 
@@ -1107,13 +1118,17 @@
   document.getElementById('lbEndBtn').href = nextHref;
 
 
+  let lbReturnFocus = null;
   function openLb(idx) {
+    lbReturnFocus = document.activeElement;
     lbIdx = idx; showLb();
+    setTimeout(() => lbClose.focus({ preventScroll: true }), 50);
     lbEl.classList.add('lb--open');
     document.documentElement.classList.add('lb-lock');
     document.body.style.overflow = 'hidden';
   }
   function closeLb() {
+    if (lbReturnFocus && lbReturnFocus.focus) lbReturnFocus.focus({ preventScroll: true });
     lbEl.classList.remove('lb--open');
     document.documentElement.classList.remove('lb-lock');
     document.body.style.overflow = '';
