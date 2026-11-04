@@ -475,15 +475,16 @@
     }
     @media (max-width: 640px) {
       .panel-grid { grid-template-columns: 1fr; gap: 16px 0; }
-      .panel--cv { padding-top: calc(var(--nav) + 40px); }
+      /* CV peeks in under the works carousel; snap lands just below the nav */
+      .panel--cv { padding-top: 28px; scroll-margin-top: var(--nav); }
       .cv-grid { grid-template-columns: 1fr; }
       .lb-stage { padding: 0 36px; }
       .lb-header { padding: 14px 20px; }
 
       /* Works horizontal scroll carousel */
       .panel--works {
-        padding-top: calc(var(--nav) + 44px);
-        padding-bottom: 56px;
+        padding-top: calc(var(--nav) + 28px);
+        padding-bottom: 28px;
       }
       .works-grid {
         display: flex;
@@ -492,6 +493,7 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         gap: 0 14px;
+        scroll-padding-left: 28px;
         margin: 0 -28px;
         padding: 0 28px 20px;
         scrollbar-width: none;
@@ -499,9 +501,9 @@
       }
       .works-grid::-webkit-scrollbar { display: none; }
       .work-card {
-        flex: 0 0 72vw;
+        flex: 0 0 82vw;
         scroll-snap-align: start;
-        max-width: 260px;
+        max-width: 360px;
       }
       .work-card-img {
         aspect-ratio: 3/4;
