@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400;1,6..96,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Figtree:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400;1,6..96,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,6 +20,7 @@
       --mono:  'EB Garamond', Georgia, serif;
       --serif: 'EB Garamond', Georgia, serif;
       --disp:  'Bodoni Moda', Georgia, serif;
+      --sans:  'Helvetica Neue', Helvetica, Arial, sans-serif;
       --nav:   52px;
     }
 
@@ -65,7 +66,7 @@
       gap: 2px;
     }
     .next-pill-label {
-      font-family: 'Figtree', sans-serif;
+      font-family: var(--sans);
       font-size: 9px;
       font-weight: 400;
       letter-spacing: .12em;
@@ -210,7 +211,7 @@
     }
 
     .hero-meta {
-      font-family: 'Figtree', sans-serif;
+      font-family: var(--sans);
       font-weight: 400;
       font-size: 12px;
       letter-spacing: .02em;
@@ -359,7 +360,7 @@
     .lb-nw[hidden] { display: none; }
     .lb-nw-text { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .lb-nw-label {
-      font-family: 'Figtree', sans-serif;
+      font-family: var(--sans);
       font-size: 9px;
       font-weight: 400;
       letter-spacing: .18em;
@@ -430,7 +431,7 @@
     .next-work-link:hover { opacity: .6; }
     .next-work-left { display: flex; flex-direction: column; gap: 8px; }
     .next-work-label {
-      font-family: 'Figtree', sans-serif;
+      font-family: var(--sans);
       font-size: 11px;
       font-weight: 400;
       letter-spacing: .1em;
