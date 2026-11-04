@@ -273,7 +273,7 @@
     /* ── lightbox ── */
     .lb {
       position: fixed; inset: 0; z-index: 500;
-      background: rgba(13,17,23,.97);
+      background: #0d1117;
       display: flex; flex-direction: column;
       opacity: 0; pointer-events: none;
       transition: opacity .3s ease;
@@ -739,7 +739,6 @@
   const lbNwEl    = document.getElementById('lbNw');
   let lbIdx = 0;
 
-  lbTitle.textContent = work.title;
 
   function openLb(idx) {
     lbIdx = idx; showLb();
@@ -776,7 +775,10 @@
   document.addEventListener('keydown', e => {
     if (!lbEl.classList.contains('lb--open')) return;
     if (e.key === 'Escape') closeLb();
-    if (e.key === 'ArrowRight') navigate(1);
+    if (e.key === 'ArrowRight') {
+      if (lbIdx === work.count - 1) location.href = lbNwEl.href;  // last photo → next work
+      else navigate(1);
+    }
     if (e.key === 'ArrowLeft') navigate(-1);
   });
   let tx = null;
