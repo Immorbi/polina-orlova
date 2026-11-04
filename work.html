@@ -622,9 +622,6 @@
     .hero-play:hover .hero-play-icon { background: rgba(255,255,255,.12); border-color: #fff; }
     .hero-play svg { width: 18px; height: 18px; }
     .hero-play .ico-play { display: none; }
-    .hero--silent .hero-play .ico-sound { display: none; }
-    .hero--silent .hero-play .ico-play { display: block; margin-left: 2px; }
-    .vp--silent #vpSound { display: none; }
     @media (max-width: 768px) {
       .hero-play { right: 20px; bottom: 36px; }
       .hero-play-label { display: none; }
@@ -895,14 +892,8 @@
     vid.playsInline = true;
     vid.setAttribute('playsinline', '');
     hero.prepend(vid);
-    hero.classList.add('hero--video');
-    // only videos with a real soundtrack offer sound; the others open as a plain fullscreen video
-    if (!work.sound) {
-      hero.classList.add('hero--silent');
-      document.getElementById('vp').classList.add('vp--silent');
-      document.querySelector('.hero-play-label').textContent = 'Watch video';
-      document.getElementById('heroPlay').setAttribute('aria-label', 'Watch video');
-    }
+    // the "watch with sound" button + player only for videos with a real soundtrack
+    if (work.sound) hero.classList.add('hero--video');
 
     // player with sound: fullscreen overlay with sound + close
     const vp = document.getElementById('vp');
