@@ -196,12 +196,14 @@
 
     .hero-meta {
       font-family: 'Figtree', sans-serif;
-      font-size: 9px;
       font-weight: 400;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      letter-spacing: .02em;
+      color: rgba(255,255,255,.6);
       margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 24px;
       opacity: 0;
       animation: fadeUp .7s ease .2s forwards;
     }
@@ -633,8 +635,13 @@
   // Hero
   document.getElementById('heroTitle').textContent = work.title;
   const metaParts = [work.year];
-  if (work.credits) metaParts.push(work.credits);
-  document.getElementById('heroMeta').textContent = metaParts.join('   ');
+  if (work.credits) metaParts.push(...work.credits.split(' · '));
+  const heroMeta = document.getElementById('heroMeta');
+  metaParts.forEach(t => {
+    const span = document.createElement('span');
+    span.textContent = t;
+    heroMeta.appendChild(span);
+  });
 
   // Hero media
   const hero = document.getElementById('hero');
