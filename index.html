@@ -163,6 +163,25 @@
       animation: fadeUp .7s ease .7s forwards;
     }
 
+    /* scroll-down hint */
+    .scroll-hint {
+      position: absolute; left: 50%;
+      top: calc(100vh - 76px);
+      top: calc(100svh - 76px - env(safe-area-inset-bottom));
+      width: 44px; height: 44px; margin-left: -22px;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: 0; padding: 0; cursor: pointer;
+      color: var(--dim);
+      opacity: 0; animation: fadeIn .8s ease 1.2s forwards;
+      transition: color .25s;
+    }
+    .scroll-hint svg { width: 14px; height: 22px; animation: hintBob 2.4s cubic-bezier(.45,0,.55,1) 2s infinite; }
+    .scroll-hint.gone { opacity: 0 !important; pointer-events: none; transition: opacity .3s ease; animation: none; }
+    @media (hover: hover) { .scroll-hint:hover { color: var(--ink); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes hintBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+    @media (prefers-reduced-motion: reduce) { .scroll-hint svg { animation: none; } }
+
     /* ── content panels (bio, statement) ── */
     .panel--bio,
     .panel--statement,
@@ -615,6 +634,9 @@
           </h1>
         </div>
       </div>
+      <button class="scroll-hint" id="scrollHint" aria-label="Scroll down">
+        <svg viewBox="0 0 14 22" fill="none" stroke="currentColor" stroke-width="1.1"><line x1="7" y1="1" x2="7" y2="20"/><polyline points="2,15 7,20 12,15"/></svg>
+      </button>
     </section>
 
     <!-- 2. BIO -->
@@ -972,6 +994,11 @@
     const toTop = document.getElementById('toTop');
     wrap.addEventListener('scroll', () => toTop.classList.toggle('show', wrap.scrollTop > innerHeight * .8), { passive: true });
     toTop.addEventListener('click', () => wrap.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // scroll-down hint
+    const hint = document.getElementById('scrollHint');
+    hint.addEventListener('click', () => wrap.scrollTo({ top: document.getElementById('panel-1').offsetTop, behavior: 'smooth' }));
+    wrap.addEventListener('scroll', () => hint.classList.toggle('gone', wrap.scrollTop > 40), { passive: true });
 </script>
 </body>
 </html>
