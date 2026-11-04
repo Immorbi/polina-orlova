@@ -809,7 +809,7 @@
       btn.className = 'work-card';
       btn.innerHTML = `
         <div class="work-card-img">
-          <img src="${imgUrl(w.slug, 1)}" alt="${w.title}" loading="lazy">
+          <img src="${imgUrl(w.slug, 1)}" alt="${w.title}">
         </div>
         <p class="work-card-title">${w.title}</p>
         <p class="work-card-meta">${w.year}</p>`;
@@ -887,15 +887,22 @@
     });
 
     // Scroll to works panel when navigating back from a work page
+    const wrap = document.getElementById('scrollWrap');
+
     if (location.hash === '#works') {
       const panelWorks = document.getElementById('panel-works');
-      if (panelWorks) {
-        panelWorks.scrollIntoView();
-        history.replaceState(null, '', location.pathname);
-      }
+      // jump instantly to the very top of the Works panel (label visible, CV peeking below);
+      // repeat after layout settles (fonts / images) so Safari doesn't land a bit lower
+      const jump = () => {
+        wrap.style.scrollBehavior = 'auto';
+        wrap.scrollTop = panelWorks.offsetTop;
+        wrap.style.scrollBehavior = '';
+      };
+      jump();
+      requestAnimationFrame(jump);
+      window.addEventListener('load', jump, { once: true });
+      history.replaceState(null, '', location.pathname);
     }
-
-    const wrap = document.getElementById('scrollWrap');
 
     // Reveal on enter
     const io = new IntersectionObserver(entries => {
@@ -905,7 +912,7 @@
           io.unobserve(e.target);
         }
       });
-    }, { root: wrap, threshold: 0.2 });
+    }, { root: wrap, threshold: 0 });
     document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
   </script>
 </body>
