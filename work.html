@@ -337,6 +337,7 @@
     }
     .lb-end-btn:active { background: rgba(255,255,255,.1); }
     .lb-end-hint {
+      display: inline-flex; align-items: center; gap: 6px;
       margin-top: 22px; font-family: var(--sans); font-size: 11px;
       color: rgba(255,255,255,.35);
     }
@@ -794,7 +795,10 @@
         Open work
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="10" x2="17" y2="10"/><polyline points="12,5 17,10 12,15"/></svg>
       </a>
-      <span class="lb-end-hint">← swipe back to photos</span>
+      <span class="lb-end-hint">
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="17" y1="10" x2="3" y2="10"/><polyline points="8,5 3,10 8,15"/></svg>
+        swipe back to photos
+      </span>
     </div>
     <a class="lb-nw" id="lbNw" href="#" hidden>
       <div class="lb-nw-text">
