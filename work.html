@@ -87,7 +87,22 @@
       flex-shrink: 0;
     }
     @media (max-width: 768px) {
-      .next-pill { display: none; }
+      /* compact, thumb-sized button in the bottom-right corner */
+      .next-pill {
+        bottom: max(16px, env(safe-area-inset-bottom));
+        right: 16px;
+        padding: 12px 14px;
+        gap: 10px;
+        mix-blend-mode: normal;
+        background: rgba(13,17,23,.72);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        border-radius: 999px;
+        align-items: center;
+      }
+      .next-pill-title { font-size: 14px; max-width: 46vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .next-pill-label { font-size: 8px; }
+      .next-pill-arrow { width: 18px; height: 18px; }
     }
 
     /* ── nav ── */
@@ -470,6 +485,7 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         gap: 0 3px;
+        scroll-padding-left: 20px;
         padding: 0 20px 0;
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -784,7 +800,10 @@
   lbEl.addEventListener('touchend', e => {
     if (tx === null) return;
     const dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) > 40) navigate(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 40) {
+      if (dx < 0 && lbIdx === work.count - 1) location.href = lbNwEl.href;  // swipe past last photo → next work
+      else navigate(dx < 0 ? 1 : -1);
+    }
     tx = null;
   });
 

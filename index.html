@@ -284,7 +284,8 @@
     .footer-contacts {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
+      margin-right: -9px; /* align icon glyph with text edge */
     }
     .footer-link {
       font-family: var(--mono);
@@ -296,6 +297,16 @@
       transition: color .25s;
     }
     .footer-link:hover { color: var(--ink); }
+    .footer-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      color: var(--dim);
+      transition: color .25s;
+    }
+    .footer-icon:hover { color: var(--ink); }
+    .footer-icon svg { width: 18px; height: 18px; }
     .footer-sep {
       font-family: var(--mono);
       font-size: 8px;
@@ -482,10 +493,17 @@
       .lb-header { padding: 14px 20px; }
 
       /* Works horizontal scroll carousel */
+      /* Works = exactly one screen; a sliver of CV peeks below.
+         Card photo height follows the device height. */
       .panel--works {
-        padding-top: calc(var(--nav) + 28px);
-        padding-bottom: 28px;
+        --peek: 56px;
+        --img-h: calc(100svh - var(--peek) - var(--nav) - 196px);
+        height: calc(100svh - var(--peek));
+        min-height: 0;
+        padding-top: calc(var(--nav) + 24px);
+        padding-bottom: 16px;
       }
+      .panel--works .panel-grid { gap: 14px 0; }
       .works-grid {
         display: flex;
         flex-direction: row;
@@ -501,12 +519,13 @@
       }
       .works-grid::-webkit-scrollbar { display: none; }
       .work-card {
-        flex: 0 0 82vw;
+        flex: 0 0 min(82vw, calc(var(--img-h) * .8));
         scroll-snap-align: start;
-        max-width: 360px;
       }
       .work-card-img {
-        aspect-ratio: 3/4;
+        aspect-ratio: auto;
+        height: var(--img-h);
+        min-height: 200px;
         margin-bottom: 14px;
       }
     }
@@ -736,9 +755,12 @@
             <div class="panel-footer">
               <span class="footer-txt">Polina Orlova</span>
               <div class="footer-contacts">
-                <a class="footer-link" href="https://instagram.com/orlova_pol" target="_blank" rel="noopener">Instagram</a>
-                <span class="footer-sep">·</span>
-                <a class="footer-link" href="mailto:orlovapolly@gmail.com">orlovapolly@gmail.com</a>
+                <a class="footer-icon" href="https://instagram.com/orlova_pol" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".7" fill="currentColor" stroke="none"/></svg>
+                </a>
+                <a class="footer-icon" href="mailto:orlovapolly@gmail.com" aria-label="Email" title="orlovapolly@gmail.com">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="14" rx="1.5"/><polyline points="3.5,6 12,13 20.5,6"/></svg>
+                </a>
               </div>
             </div>
           </div>
