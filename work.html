@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>polinaorlova</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,6 +145,8 @@
       text-transform: none;
       transition: color .4s ease;
     }
+    .nav { transition: background-color .3s ease, border-color .3s ease; border-bottom: 1px solid transparent; }
+    .nav--scrolled { background: var(--paper); border-bottom-color: var(--rule); }
     .nav--scrolled .nav-back,
     .nav--scrolled .nav-name { color: var(--ink); }
     .nav-logo {
@@ -452,7 +454,9 @@
       color: var(--dim);
     }
     @media (max-width: 860px) { .next-work-link { padding: 40px 28px; } }
-    @media (max-width: 540px) { .next-work-link { padding: 32px 20px; } }
+    @media (max-width: 540px) {
+      .next-work-link { padding: 32px 20px calc(96px + env(safe-area-inset-bottom)); }
+    }
 
     /* ── animations ── */
     @keyframes fadeUp {
@@ -812,11 +816,14 @@
 
   // Nav: white on hero, switch to ink when scrolled past hero
   const navEl = document.querySelector('.nav');
-  const heroHeightPx = document.getElementById('hero').offsetHeight;
-  window.addEventListener('scroll', () => {
-    if (window.innerWidth < 768) return;
-    navEl.classList.toggle('nav--scrolled', window.scrollY > heroHeightPx * 0.85);
-  }, { passive: true });
+  const heroContent = document.querySelector('.hero-content');
+  const syncNav = () => {
+    const limit = heroContent.getBoundingClientRect().top + window.scrollY - navEl.offsetHeight - 12;
+    navEl.classList.toggle('nav--scrolled', window.scrollY > limit);
+  };
+  window.addEventListener('scroll', syncNav, { passive: true });
+  window.addEventListener('resize', syncNav);
+  syncNav();
 
   // Floating next-work pill — only after the hero, hidden again when the big next-work block is visible
   const pill = document.getElementById('nextPill');
