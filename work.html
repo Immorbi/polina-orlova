@@ -624,8 +624,6 @@
   const slug = new URLSearchParams(location.search).get('s') || 'depth-of-the-inner-voice';
   const work = WORKS[slug] || WORKS['depth-of-the-inner-voice'];
 
-  // Update page title
-  document.title = `${work.title} — polinaorlova`;
 
   // Light hero variant
   if (work.lightHero) {
