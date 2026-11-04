@@ -680,6 +680,17 @@
     .vp-bar, .vp-progress { transition: opacity .35s ease; }
     .vp--idle .vp-bar, .vp--idle .vp-progress { opacity: 0; pointer-events: none; }
     .vp--idle { cursor: none; }
+    .vp-paused-icon {
+      position: absolute; left: 50%; top: 50%;
+      width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.5); background: rgba(0,0,0,.3);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      pointer-events: none; opacity: 0; transform: scale(.9);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .vp-paused-icon svg { width: 24px; height: 24px; margin-left: 3px; }
+    .vp--paused .vp-paused-icon { opacity: 1; transform: none; }
 
     /* video tile in the gallery */
     .gallery-item--video { position: relative; background: #111; }
@@ -769,9 +780,9 @@
     <p class="hero-meta" id="heroMeta"></p>
     <h1 class="hero-title" id="heroTitle"></h1>
   </div>
-  <button class="hero-play" id="heroPlay" aria-label="Watch video with sound">
+  <button class="hero-play" id="heroPlay" aria-label="Watch video">
     <svg class="ico-lead" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>
-    <span class="hero-play-label"><span class="lbl-d">Watch with sound</span><span class="lbl-m">Watch video</span></span>
+    <span class="hero-play-label"><span class="lbl-d">Watch video</span><span class="lbl-m">Watch video</span></span>
     <span class="hero-play-icon">
       <svg class="ico-sound" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 8h3l4-3.5v11L6 12H3z"/><path d="M13 7.5a3.5 3.5 0 0 1 0 5M15.2 5.3a6.6 6.6 0 0 1 0 9.4"/></svg>
       <svg class="ico-play" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>
@@ -817,6 +828,7 @@
     </button>
   </div>
   <div class="vp-progress"><span id="vpProgress"></span></div>
+  <div class="vp-paused-icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg></div>
 </div>
 
 <!-- LIGHTBOX -->
@@ -947,9 +959,10 @@
     openVp = () => {
       vid.pause();
       vpVideo.currentTime = 0;
-      vpVideo.muted = !work.sound;
-      vp.classList.toggle('vp--muted', !work.sound);
+      vpVideo.muted = true;
+      vp.classList.add('vp--muted');
       vp.classList.add('vp--open');
+      vp.classList.remove('vp--paused');
       document.documentElement.classList.add('lb-lock');
       document.body.style.overflow = 'hidden';
       vpVideo.play().catch(() => { vpVideo.muted = true; vp.classList.add('vp--muted'); vpVideo.play(); });
@@ -974,17 +987,17 @@
     const showControls = () => {
       vp.classList.remove('vp--idle');
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => { if (!vpVideo.paused) vp.classList.add('vp--idle'); }, 2500);
+      idleTimer = setTimeout(() => vp.classList.add('vp--idle'), 1000);
     };
+    // a tap pauses / resumes and always brings the controls back
     vpVideo.addEventListener('click', () => {
-      // first tap only reveals the controls; a tap while they're visible pauses / resumes
-      if (vp.classList.contains('vp--idle')) { showControls(); return; }
       vpVideo.paused ? vpVideo.play() : vpVideo.pause();
       showControls();
     });
+    vpVideo.addEventListener('pause', () => vp.classList.add('vp--paused'));
+    vpVideo.addEventListener('play', () => vp.classList.remove('vp--paused'));
     vp.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') showControls(); });
     vpVideo.addEventListener('play', showControls);
-    vpVideo.addEventListener('pause', () => { clearTimeout(idleTimer); vp.classList.remove('vp--idle'); });
     vp.querySelectorAll('.vp-btn').forEach(b => b.addEventListener('click', showControls));
     vpVideo.addEventListener('timeupdate', () => {
       if (vpVideo.duration) vpProgress.style.width = (vpVideo.currentTime / vpVideo.duration * 100) + '%';
