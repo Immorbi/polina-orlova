@@ -604,42 +604,31 @@
     /* ── hero "watch with sound" button ── */
     .hero-play {
       position: absolute;
-      right: 60px; bottom: 60px;
+      left: 60px; bottom: 60px;
       display: none;
-      align-items: center; gap: 12px;
-      background: none; border: none; padding: 0;
+      align-items: center; gap: 10px;
+      height: 44px; padding: 0 18px;
+      border: 1px solid rgba(255,255,255,.5); border-radius: 999px;
+      background: rgba(0,0,0,.28);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
       color: #fff; cursor: pointer;
-      font-family: var(--sans); font-size: 12px; letter-spacing: .02em;
+      font-family: var(--sans); font-size: 13px; letter-spacing: .02em;
       opacity: 0; animation: fadeUp .7s ease .6s forwards;
+      transition-property: background-color, border-color, transform; transition-duration: .25s;
     }
+    @media (hover: hover) { .hero-play:hover { background: rgba(0,0,0,.45); border-color: #fff; } }
+    .hero-play:active { transform: scale(.96); }
+    .hero--video .hero-content { bottom: 128px; }
     .hero--video .hero-play { display: flex; }
-    .hero-play-icon {
-      width: 46px; height: 46px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.55);
-      display: flex; align-items: center; justify-content: center;
-      transition: background-color .25s, border-color .25s;
-    }
-    .hero-play:hover .hero-play-icon { background: rgba(255,255,255,.12); border-color: #fff; }
-    .hero-play svg { width: 18px; height: 18px; }
+    .hero-play-icon { display: flex; align-items: center; }
+    .hero-play-icon svg { width: 17px; height: 17px; opacity: .8; }
+    .hero-play .ico-lead { width: 14px; height: 14px; }
     .hero-play .ico-play { display: none; }
-    .hero-play .ico-lead, .hero-play .lbl-m { display: none; }
+    .hero-play .lbl-m { display: none; }
+    .hero--silent .hero-play-icon { display: none; }
     @media (max-width: 768px) {
       /* phone: a labelled pill under the title — "▶ Watch video 🔈" */
-      .hero-play {
-        left: 20px; right: auto;
-        bottom: calc(28px + env(safe-area-inset-bottom));
-        gap: 10px; padding: 0 18px; height: 44px;
-        border: 1px solid rgba(255,255,255,.5); border-radius: 999px;
-        background: rgba(0,0,0,.28);
-        -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-        font-size: 13px;
-      }
-      .hero-play:active { transform: scale(.96); }
-      .hero-play .ico-lead { display: block; width: 14px; height: 14px; }
-      .hero-play .lbl-d { display: none; }
-      .hero-play .lbl-m { display: inline; }
-      .hero-play-icon { width: auto; height: auto; border: none; }
-      .hero-play-icon svg { width: 17px; height: 17px; opacity: .8; }
+      .hero-play { left: 20px; bottom: calc(28px + env(safe-area-inset-bottom)); }
       .hero--video .hero-content { bottom: calc(92px + env(safe-area-inset-bottom)); right: 20px; }
     }
 
@@ -744,7 +733,7 @@
 </button>
 
 <!-- FLOATING NEXT WORK PILL -->
-<a class="next-pill hidden" id="nextPill" href="#">
+<a class="next-pill" id="nextPill" href="#">
   <div class="next-pill-text">
     <span class="next-pill-label">Next Work</span>
     <span class="next-pill-title" id="nextPillTitle"></span>
@@ -947,8 +936,9 @@
       else vid.addEventListener('loadedmetadata', () => res(vid.videoWidth / vid.videoHeight), { once: true });
       vid.addEventListener('error', () => res(9 / 16), { once: true });
     });
-    // the "watch with sound" button only for videos with a real soundtrack
-    if (work.sound) hero.classList.add('hero--video');
+    // "Watch video" button on every video work; the speaker icon only where there is a soundtrack
+    hero.classList.add('hero--video');
+    if (!work.sound) hero.classList.add('hero--silent');
 
     // player with sound: fullscreen overlay with sound + close
     const vp = document.getElementById('vp');
@@ -1191,7 +1181,8 @@
   const pill = document.getElementById('nextPill');
   const nextSection = document.querySelector('.next-work');
   let pastHero = false, footerVisible = false;
-  const syncPill = () => pill.classList.toggle('hidden', !pastHero || footerVisible);
+  const isPhoneW = () => window.matchMedia('(max-width: 768px)').matches;
+  const syncPill = () => pill.classList.toggle('hidden', (isPhoneW() && !pastHero) || footerVisible);
   new IntersectionObserver(e => { pastHero = !e[0].isIntersecting; syncPill(); }, { threshold: 0.35 })
     .observe(document.getElementById('hero'));
   new IntersectionObserver(e => { footerVisible = e[0].isIntersecting; syncPill(); }, { threshold: 0.1 })
