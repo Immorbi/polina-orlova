@@ -599,6 +599,75 @@
 
     /* on work pages sit above the Next Work pill */
     @media (min-width: 769px) { .to-top { right: 60px; bottom: 118px; } }
+
+    /* ── hero "watch with sound" button ── */
+    .hero-play {
+      position: absolute;
+      right: 60px; bottom: 60px;
+      display: none;
+      align-items: center; gap: 12px;
+      background: none; border: none; padding: 0;
+      color: #fff; cursor: pointer;
+      font-family: var(--sans); font-size: 12px; letter-spacing: .02em;
+      opacity: 0; animation: fadeUp .7s ease .6s forwards;
+    }
+    .hero--video .hero-play { display: flex; }
+    .hero-play-icon {
+      width: 46px; height: 46px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.55);
+      display: flex; align-items: center; justify-content: center;
+      transition: background-color .25s, border-color .25s;
+    }
+    .hero-play:hover .hero-play-icon { background: rgba(255,255,255,.12); border-color: #fff; }
+    .hero-play svg { width: 18px; height: 18px; }
+    .hero-play .ico-play { display: none; }
+    @media (max-width: 768px) {
+      .hero-play { right: 20px; bottom: 36px; }
+      .hero-play-label { display: none; }
+      .hero-play .ico-sound { display: none; }
+      .hero-play .ico-play { display: block; margin-left: 2px; }
+      .hero-content { right: 84px; }
+    }
+
+    /* ── video player overlay ── */
+    .vp {
+      position: fixed; inset: 0; z-index: 600;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    @supports (height: 100lvh) {
+      .vp { inset: auto; top: 0; left: 0; right: 0; height: 100lvh; padding-bottom: calc(100lvh - 100svh); }
+    }
+    .vp.vp--open { opacity: 1; pointer-events: all; }
+    .vp video { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .vp-bar {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; justify-content: flex-end; gap: 10px;
+      padding: max(18px, env(safe-area-inset-top)) 24px 18px;
+    }
+    .vp-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(0,0,0,.35);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background-color .25s, border-color .25s;
+    }
+    .vp-btn:hover { background: rgba(255,255,255,.12); border-color: #fff; }
+    .vp-btn svg { width: 18px; height: 18px; }
+    .vp-btn .ico-muted { display: none; }
+    .vp--muted .vp-btn .ico-muted { display: block; }
+    .vp--muted .vp-btn .ico-unmuted { display: none; }
+    .vp-progress {
+      position: absolute; left: 0; right: 0; bottom: calc(100lvh - 100svh);
+      height: 2px; background: rgba(255,255,255,.15);
+    }
+    @supports not (height: 100lvh) { .vp-progress { bottom: 0; } }
+    .vp-progress span { display: block; height: 100%; width: 0; background: rgba(255,255,255,.8); }
+    @media (max-width: 768px) { .vp-bar { padding-left: 16px; padding-right: 16px; } }
   </style>
 </head>
 <body>
@@ -643,6 +712,13 @@
     <p class="hero-meta" id="heroMeta"></p>
     <h1 class="hero-title" id="heroTitle"></h1>
   </div>
+  <button class="hero-play" id="heroPlay" aria-label="Watch video with sound">
+    <span class="hero-play-label">Watch with sound</span>
+    <span class="hero-play-icon">
+      <svg class="ico-sound" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 8h3l4-3.5v11L6 12H3z"/><path d="M13 7.5a3.5 3.5 0 0 1 0 5M15.2 5.3a6.6 6.6 0 0 1 0 9.4"/></svg>
+      <svg class="ico-play" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>
+    </span>
+  </button>
 </div>
 
 <!-- GALLERY -->
@@ -669,6 +745,21 @@
 </div>
 
 <!-- FOOTER -->
+
+<!-- VIDEO PLAYER -->
+<div class="vp" id="vp" role="dialog" aria-modal="true" aria-label="Video">
+  <video id="vpVideo" playsinline loop preload="none"></video>
+  <div class="vp-bar">
+    <button class="vp-btn" id="vpSound" aria-label="Sound on / off">
+      <svg class="ico-unmuted" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 8h3l4-3.5v11L6 12H3z"/><path d="M13 7.5a3.5 3.5 0 0 1 0 5M15.2 5.3a6.6 6.6 0 0 1 0 9.4"/></svg>
+      <svg class="ico-muted" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 8h3l4-3.5v11L6 12H3z"/><path d="M13.5 7.5l4 5M17.5 7.5l-4 5"/></svg>
+    </button>
+    <button class="vp-btn" id="vpClose" aria-label="Close video">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
+  </div>
+  <div class="vp-progress"><span id="vpProgress"></span></div>
+</div>
 
 <!-- LIGHTBOX -->
 <div class="lb" id="lb" role="dialog" aria-modal="true">
@@ -777,6 +868,41 @@
     vid.playsInline = true;
     vid.setAttribute('playsinline', '');
     hero.prepend(vid);
+    hero.classList.add('hero--video');
+
+    // player with sound: fullscreen overlay with sound + close
+    const vp = document.getElementById('vp');
+    const vpVideo = document.getElementById('vpVideo');
+    const vpProgress = document.getElementById('vpProgress');
+    vpVideo.src = vid.src;
+    const openVp = () => {
+      vid.pause();
+      vpVideo.currentTime = 0;
+      vpVideo.muted = false;
+      vp.classList.remove('vp--muted');
+      vp.classList.add('vp--open');
+      document.documentElement.classList.add('lb-lock');
+      document.body.style.overflow = 'hidden';
+      vpVideo.play().catch(() => { vpVideo.muted = true; vp.classList.add('vp--muted'); vpVideo.play(); });
+    };
+    const closeVp = () => {
+      vp.classList.remove('vp--open');
+      document.documentElement.classList.remove('lb-lock');
+      document.body.style.overflow = '';
+      vpVideo.pause();
+      vid.play().catch(() => {});
+    };
+    document.getElementById('heroPlay').addEventListener('click', openVp);
+    document.getElementById('vpClose').addEventListener('click', closeVp);
+    document.getElementById('vpSound').addEventListener('click', () => {
+      vpVideo.muted = !vpVideo.muted;
+      vp.classList.toggle('vp--muted', vpVideo.muted);
+    });
+    vpVideo.addEventListener('click', () => vpVideo.paused ? vpVideo.play() : vpVideo.pause());
+    vpVideo.addEventListener('timeupdate', () => {
+      if (vpVideo.duration) vpProgress.style.width = (vpVideo.currentTime / vpVideo.duration * 100) + '%';
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && vp.classList.contains('vp--open')) closeVp(); });
   } else {
     const img = document.createElement('img');
     img.className = 'hero-img';
