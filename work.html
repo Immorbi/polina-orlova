@@ -622,12 +622,25 @@
     .hero-play:hover .hero-play-icon { background: rgba(255,255,255,.12); border-color: #fff; }
     .hero-play svg { width: 18px; height: 18px; }
     .hero-play .ico-play { display: none; }
+    .hero-play .ico-lead, .hero-play .lbl-m { display: none; }
     @media (max-width: 768px) {
-      .hero-play { right: 20px; bottom: 36px; }
-      .hero-play-label { display: none; }
-      .hero-play .ico-sound { display: none; }
-      .hero-play .ico-play { display: block; margin-left: 2px; }
-      .hero-content { right: 84px; }
+      /* phone: a labelled pill under the title — "▶ Watch video 🔈" */
+      .hero-play {
+        left: 20px; right: auto;
+        bottom: calc(28px + env(safe-area-inset-bottom));
+        gap: 10px; padding: 0 18px; height: 44px;
+        border: 1px solid rgba(255,255,255,.5); border-radius: 999px;
+        background: rgba(0,0,0,.28);
+        -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+        font-size: 13px;
+      }
+      .hero-play:active { transform: scale(.96); }
+      .hero-play .ico-lead { display: block; width: 14px; height: 14px; }
+      .hero-play .lbl-d { display: none; }
+      .hero-play .lbl-m { display: inline; }
+      .hero-play-icon { width: auto; height: auto; border: none; }
+      .hero-play-icon svg { width: 17px; height: 17px; opacity: .8; }
+      .hero--video .hero-content { bottom: calc(92px + env(safe-area-inset-bottom)); right: 20px; }
     }
 
     /* ── video player overlay ── */
@@ -753,7 +766,8 @@
     <h1 class="hero-title" id="heroTitle"></h1>
   </div>
   <button class="hero-play" id="heroPlay" aria-label="Watch video with sound">
-    <span class="hero-play-label">Watch with sound</span>
+    <svg class="ico-lead" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>
+    <span class="hero-play-label"><span class="lbl-d">Watch with sound</span><span class="lbl-m">Watch video</span></span>
     <span class="hero-play-icon">
       <svg class="ico-sound" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 8h3l4-3.5v11L6 12H3z"/><path d="M13 7.5a3.5 3.5 0 0 1 0 5M15.2 5.3a6.6 6.6 0 0 1 0 9.4"/></svg>
       <svg class="ico-play" viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>
