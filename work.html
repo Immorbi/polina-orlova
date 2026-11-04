@@ -299,6 +299,16 @@
       transition: opacity .3s ease;
     }
     .lb.lb--open { opacity: 1; pointer-events: all; }
+    /* iOS Safari: cover the area behind the browser bars too, keep content in the visible part */
+    @supports (height: 100lvh) {
+      .lb {
+        inset: auto;
+        top: 0; left: 0; right: 0;
+        height: 100lvh;
+        padding-bottom: calc(100lvh - 100svh);
+      }
+    }
+    html.lb-lock, html.lb-lock body { background: #0d1117; }
 
     .lb-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -801,10 +811,12 @@
   function openLb(idx) {
     lbIdx = idx; showLb();
     lbEl.classList.add('lb--open');
+    document.documentElement.classList.add('lb-lock');
     document.body.style.overflow = 'hidden';
   }
   function closeLb() {
     lbEl.classList.remove('lb--open');
+    document.documentElement.classList.remove('lb-lock');
     document.body.style.overflow = '';
     lbImg.classList.remove('lb-img--in');
   }
