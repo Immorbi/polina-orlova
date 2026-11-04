@@ -310,6 +310,38 @@
     }
     html.lb-lock, html.lb-lock body { background: #0d1117; }
 
+    /* mobile: "next work" end slide after the last photo */
+    .lb-end {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; width: 100%; max-width: 360px;
+      color: #fff;
+      animation: fadeUp .45s ease both;
+    }
+    .lb-end[hidden] { display: none; }
+    .lb-end-label {
+      font-family: var(--sans); font-size: 10px; letter-spacing: .18em;
+      text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 18px;
+    }
+    .lb-end-cover { display: block; width: 78%; aspect-ratio: 4/5; overflow: hidden; background: #1a2029; }
+    .lb-end-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .lb-end-title {
+      font-family: var(--disp); font-style: italic; font-size: 28px; line-height: 1.1;
+      margin: 20px 0 22px;
+    }
+    .lb-end-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 24px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.35);
+      color: #fff; text-decoration: none;
+      font-family: var(--sans); font-size: 13px; letter-spacing: .02em;
+    }
+    .lb-end-btn:active { background: rgba(255,255,255,.1); }
+    .lb-end-hint {
+      margin-top: 22px; font-family: var(--sans); font-size: 11px;
+      color: rgba(255,255,255,.35);
+    }
+    @media (max-width: 768px) { .lb-nw { display: none !important; } }
+
     .lb-header {
       display: flex; justify-content: space-between; align-items: center;
       padding: 18px 32px; flex-shrink: 0;
@@ -342,6 +374,7 @@
       user-select: none;
     }
     .lb-img.lb-img--in { opacity: 1; }
+    .lb-img[hidden] { display: none; }
 
     .lb-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
@@ -509,13 +542,12 @@
       }
       .gallery-grid::-webkit-scrollbar { display: none; }
       .gallery-row { display: contents; }
-      /* filmstrip: every photo in its own proportions, one common height
-         (very wide shots are capped to the screen width) */
+      /* filmstrip: every photo the same height, width follows its proportions */
       .gallery-grid { align-items: center; }
       .gallery-row--solo-portrait .gallery-item,
       .gallery-item {
         flex: 0 0 auto !important;
-        width: min(90vw, calc(66vw * var(--r, 1)));
+        width: calc(50vw * var(--r, 1));
         margin: 0;
         scroll-snap-align: start;
         overflow: hidden;
@@ -663,6 +695,16 @@
         <polyline points="7,3 13,10 7,17"/>
       </svg>
     </button>
+    <div class="lb-end" id="lbEnd" hidden>
+      <span class="lb-end-label">Next Work</span>
+      <a class="lb-end-cover" id="lbEndCover" href="#"><img id="lbEndImg" src="" alt=""></a>
+      <span class="lb-end-title" id="lbEndTitle"></span>
+      <a class="lb-end-btn" id="lbEndBtn" href="#">
+        Open work
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="10" x2="17" y2="10"/><polyline points="12,5 17,10 12,15"/></svg>
+      </a>
+      <span class="lb-end-hint">← swipe back to photos</span>
+    </div>
     <a class="lb-nw" id="lbNw" href="#" hidden>
       <div class="lb-nw-text">
         <span class="lb-nw-label">Next Work</span>
@@ -805,7 +847,18 @@
   const lbPrev    = document.getElementById('lbPrev');
   const lbNext    = document.getElementById('lbNext');
   const lbNwEl    = document.getElementById('lbNw');
+  const lbEnd     = document.getElementById('lbEnd');
   let lbIdx = 0;
+
+  // phones get an extra "next work" slide after the last photo
+  const isPhone = () => window.matchMedia('(max-width: 768px)').matches;
+  const lastIdx = () => isPhone() ? work.count : work.count - 1;
+  const nextHref = `work.html?s=${nextSlug}`;
+  document.getElementById('lbEndTitle').textContent = nextWork.title;
+  document.getElementById('lbEndImg').src = `works/images/${nextSlug}/01.jpg`;
+  document.getElementById('lbEndImg').alt = nextWork.title;
+  document.getElementById('lbEndCover').href = nextHref;
+  document.getElementById('lbEndBtn').href = nextHref;
 
 
   function openLb(idx) {
@@ -821,9 +874,14 @@
     lbImg.classList.remove('lb-img--in');
   }
   function showLb() {
-    lbCounter.textContent = `${lbIdx + 1} / ${work.count}`;
+    const onEnd = lbIdx === work.count;            // phone end slide
+    lbEnd.hidden = !onEnd;
+    lbImg.hidden = onEnd;
+    lbCounter.style.visibility = onEnd ? 'hidden' : '';
     lbPrev.hidden = lbIdx === 0;
-    const isLast = lbIdx === work.count - 1;
+    if (onEnd) { lbNext.hidden = true; lbNwEl.hidden = true; return; }
+    lbCounter.textContent = `${lbIdx + 1} / ${work.count}`;
+    const isLast = lbIdx === lastIdx();
     lbNext.hidden = isLast;
     lbNwEl.hidden = !isLast;
     lbImg.classList.remove('lb-img--in');
@@ -832,13 +890,13 @@
     tmp.onload = () => { lbImg.src = url; requestAnimationFrame(() => lbImg.classList.add('lb-img--in')); };
     tmp.src = url;
   }
-  function navigate(d) { const n = lbIdx + d; if (n >= 0 && n < work.count) { lbIdx = n; showLb(); } }
+  function navigate(d) { const n = lbIdx + d; if (n >= 0 && n <= lastIdx()) { lbIdx = n; showLb(); } }
 
   lbClose.addEventListener('click', closeLb);
   lbPrev.addEventListener('click', () => navigate(-1));
   lbNext.addEventListener('click', () => navigate(1));
   lbStage.addEventListener('click', e => {
-    if (e.target === lbImg) return;
+    if (e.target === lbImg || e.target.closest('.lb-end')) return;
     if (e.target.closest && e.target.closest('.lb-btn')) return;
     closeLb();
   });
@@ -846,7 +904,7 @@
     if (!lbEl.classList.contains('lb--open')) return;
     if (e.key === 'Escape') closeLb();
     if (e.key === 'ArrowRight') {
-      if (lbIdx === work.count - 1) location.href = lbNwEl.href;  // last photo → next work
+      if (lbIdx === lastIdx()) location.href = nextHref;  // end → next work
       else navigate(1);
     }
     if (e.key === 'ArrowLeft') navigate(-1);
@@ -857,8 +915,7 @@
     if (tx === null) return;
     const dx = e.changedTouches[0].clientX - tx;
     if (Math.abs(dx) > 40) {
-      if (dx < 0 && lbIdx === work.count - 1) location.href = lbNwEl.href;  // swipe past last photo → next work
-      else navigate(dx < 0 ? 1 : -1);
+      navigate(dx < 0 ? 1 : -1);  // on phones the last swipe opens the "next work" slide
     }
     tx = null;
   });
