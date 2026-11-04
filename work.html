@@ -622,6 +622,9 @@
     .hero-play:hover .hero-play-icon { background: rgba(255,255,255,.12); border-color: #fff; }
     .hero-play svg { width: 18px; height: 18px; }
     .hero-play .ico-play { display: none; }
+    .hero--silent .hero-play .ico-sound { display: none; }
+    .hero--silent .hero-play .ico-play { display: block; margin-left: 2px; }
+    .vp--silent #vpSound { display: none; }
     @media (max-width: 768px) {
       .hero-play { right: 20px; bottom: 36px; }
       .hero-play-label { display: none; }
@@ -841,7 +844,7 @@
     'under-the-skin-of-the-garden': { title: 'Under the Skin of the Garden', year: '2025', count: 5, video: false },
     'choir':                    { title: 'Choir',                     year: '2025', count: 6,  video: false },
     'chamber-of-memory':        { title: 'Chamber of Memory',         year: '2025', count: 1,  video: false, lightHero: true },
-    'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true,  credits: 'Video: Daria Vengerskaya, Merry Manyface · Photo: Liza New Fire' },
+    'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true, sound: true,  credits: 'Video: Daria Vengerskaya, Merry Manyface · Photo: Liza New Fire' },
     'depth-of-the-inner-world': { title: 'Depth of the Inner World',  year: '2020', count: 10, video: false, credits: 'Photo: Roma Renton' },
     'system':                   { title: 'System',                    year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton' },
   };
@@ -893,6 +896,13 @@
     vid.setAttribute('playsinline', '');
     hero.prepend(vid);
     hero.classList.add('hero--video');
+    // only videos with a real soundtrack offer sound; the others open as a plain fullscreen video
+    if (!work.sound) {
+      hero.classList.add('hero--silent');
+      document.getElementById('vp').classList.add('vp--silent');
+      document.querySelector('.hero-play-label').textContent = 'Watch video';
+      document.getElementById('heroPlay').setAttribute('aria-label', 'Watch video');
+    }
 
     // player with sound: fullscreen overlay with sound + close
     const vp = document.getElementById('vp');
