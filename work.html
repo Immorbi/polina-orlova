@@ -662,6 +662,25 @@
     .vp-btn .ico-muted { display: none; }
     .vp--muted .vp-btn .ico-muted { display: block; }
     .vp--muted .vp-btn .ico-unmuted { display: none; }
+    .vp--silent #vpSound { display: none; }
+
+    /* video tile in the gallery */
+    .gallery-item--video { position: relative; background: #111; }
+    .gallery-item--video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-play {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.6);
+      background: rgba(0,0,0,.25);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition-property: background-color, transform; transition-duration: .25s;
+    }
+    .gallery-play svg { width: 22px; height: 22px; margin-left: 3px; }
+    @media (hover: hover) { .gallery-item--video:hover .gallery-play { background: rgba(0,0,0,.4); } }
+    .gallery-item--video:active .gallery-play { transform: translate(-50%, -50%) scale(.94); }
+    @media (max-width: 540px) { .gallery-play { width: 48px; height: 48px; } .gallery-play svg { width: 18px; height: 18px; } }
     .vp-progress {
       position: absolute; left: 0; right: 0; bottom: calc(100lvh - 100svh);
       height: 2px; background: rgba(255,255,255,.15);
@@ -882,6 +901,7 @@
 
   // Hero media
   const hero = document.getElementById('hero');
+  let openVp = null, heroVideoRatio = Promise.resolve(null);
   if (work.video) {
     const vid = document.createElement('video');
     vid.className = 'hero-media';
@@ -892,7 +912,12 @@
     vid.playsInline = true;
     vid.setAttribute('playsinline', '');
     hero.prepend(vid);
-    // the "watch with sound" button + player only for videos with a real soundtrack
+    heroVideoRatio = new Promise(res => {
+      if (vid.readyState >= 1) res(vid.videoWidth / vid.videoHeight);
+      else vid.addEventListener('loadedmetadata', () => res(vid.videoWidth / vid.videoHeight), { once: true });
+      vid.addEventListener('error', () => res(9 / 16), { once: true });
+    });
+    // the "watch with sound" button only for videos with a real soundtrack
     if (work.sound) hero.classList.add('hero--video');
 
     // player with sound: fullscreen overlay with sound + close
@@ -900,11 +925,12 @@
     const vpVideo = document.getElementById('vpVideo');
     const vpProgress = document.getElementById('vpProgress');
     vpVideo.src = vid.src;
-    const openVp = () => {
+    if (!work.sound) vp.classList.add('vp--silent');
+    openVp = () => {
       vid.pause();
       vpVideo.currentTime = 0;
-      vpVideo.muted = false;
-      vp.classList.remove('vp--muted');
+      vpVideo.muted = !work.sound;
+      vp.classList.toggle('vp--muted', !work.sound);
       vp.classList.add('vp--open');
       document.documentElement.classList.add('lb-lock');
       document.body.style.overflow = 'hidden';
@@ -959,6 +985,29 @@
     return item;
   }
 
+  function makeVideoItem(ratio) {
+    const item = document.createElement('div');
+    item.className = 'gallery-item gallery-item--video';
+    item.style.flexGrow = ratio;
+    item.style.aspectRatio = ratio;
+    item.style.setProperty('--r', ratio);
+    const v = document.createElement('video');
+    v.src = `works/video/${slug}/hero.mp4`;
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.setAttribute('playsinline', '');
+    v.preload = 'metadata';
+    item.appendChild(v);
+    const btn = document.createElement('button');
+    btn.className = 'gallery-play';
+    btn.setAttribute('aria-label', work.sound ? 'Watch video with sound' : 'Watch video');
+    btn.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>';
+    item.appendChild(btn);
+    item.addEventListener('click', () => openVp && openVp());
+    // play silently while on screen
+    new IntersectionObserver(e => { e[0].isIntersecting ? v.play().catch(() => {}) : v.pause(); }, { threshold: .25 }).observe(item);
+    return item;
+  }
+
   function imgRatio(i) {
     return new Promise(res => {
       const t = new Image();
@@ -970,9 +1019,16 @@
 
   // Layout: first photo full width; then alternate full / pair.
   // A pair is only made from two photos of the same orientation, so neither gets tiny.
-  Promise.all(Array.from({ length: work.count }, (_, k) => imgRatio(k + 1))).then(ratios => {
+  Promise.all([heroVideoRatio, ...Array.from({ length: work.count }, (_, k) => imgRatio(k + 1))]).then(([videoRatio, ...ratios]) => {
     const portrait = r => r < 1;
     let i = 0, lastWasPair = true;
+    // the work's video opens the gallery as its own tile
+    if (videoRatio) {
+      const row = document.createElement('div');
+      row.className = 'gallery-row' + (portrait(videoRatio) ? ' gallery-row--solo-portrait' : '');
+      row.appendChild(makeVideoItem(videoRatio));
+      grid.appendChild(row);
+    }
     while (i < ratios.length) {
       const row = document.createElement('div');
       row.className = 'gallery-row';
