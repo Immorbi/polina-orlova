@@ -15,7 +15,7 @@
     :root {
       --ink:   #1e2b3c;
       --paper: #ffffff;
-      --dim:   rgba(30,43,60,.42);
+      --dim:   rgba(30,43,60,.66);
       --rule:  rgba(30,43,60,.12);
       --mono:  'EB Garamond', Georgia, serif;
       --serif: 'EB Garamond', Georgia, serif;
@@ -288,7 +288,7 @@
       transition: transform .8s cubic-bezier(.16,1,.3,1), opacity .3s;
     }
 
-    .gallery-item:hover img { transform: scale(1.03); }
+    @media (hover: hover) { .gallery-item:hover img { transform: scale(1.03); } }
 
     /* ── lightbox ── */
     .lb {
@@ -361,7 +361,7 @@
       font-family: var(--mono); font-size: 9px; font-weight: 500;
       letter-spacing: .2em; text-transform: uppercase;
       color: rgba(255,255,255,.45); background: none; border: none;
-      cursor: pointer; transition: color .2s; padding: 4px 0;
+      cursor: pointer; transition: color .2s; padding: 15px; margin: -15px;
     }
     .lb-close:hover { color: #fff; }
 
@@ -669,6 +669,26 @@
     @supports not (height: 100lvh) { .vp-progress { bottom: 0; } }
     .vp-progress span { display: block; height: 100%; width: 0; background: rgba(255,255,255,.8); }
     @media (max-width: 768px) { .vp-bar { padding-left: 16px; padding-right: 16px; } }
+
+    /* ── polish (design-engineering pass) ── */
+    ::selection { background: rgba(30,43,60,.88); color: #fff; }
+    a:focus-visible, button:focus-visible {
+      outline: 1px solid currentColor; outline-offset: 4px; border-radius: 2px;
+    }
+    /* invisible 44px hit areas for small text links */
+    .nav-back, .nav-name { position: relative; }
+    .nav-back::before, .nav-name::before {
+      content: ''; position: absolute; left: -10px; right: -10px; top: 50%;
+      height: 44px; transform: translateY(-50%);
+    }
+    /* press feedback */
+    .to-top, .vp-btn, .hero-play-icon, .lb-end-btn, .footer-icon { transition-property: background-color, border-color, color, opacity, transform; }
+    .to-top:active, .vp-btn:active, .hero-play:active .hero-play-icon, .lb-end-btn:active, .footer-icon:active { transform: scale(.94); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; scroll-behavior: auto !important; }
+      .panel-grid { transform: none !important; }
+      .work-card:hover .work-card-img img, .gallery-item:hover img { transform: none !important; }
+    }
   </style>
 </head>
 <body>
