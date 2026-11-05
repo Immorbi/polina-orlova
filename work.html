@@ -272,6 +272,7 @@
     .work-medium .wm-label { color: var(--ink); }
     .work-text { margin-top: 28px; font-family: var(--serif); font-size: clamp(17px, 1.5vw, 19px); line-height: 1.6; color: var(--ink); }
     .work-text p + p { margin-top: 1em; }
+    .work-text p { text-wrap: pretty; }
     @media (max-width: 540px) {
       .work-info { margin: 12px 20px 40px; }
       .work-text { margin-top: 20px; font-size: 16.5px; line-height: 1.55; }
@@ -1031,9 +1032,9 @@
     'system':                   { title: 'Reference System', year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton',
       // one drip system, shown at different exhibitions — photos grouped by show, newest first
       parts: [
-        { id: 'v4', title: 'New Locality',                  meta: ['Version 4', 'The Gallery, Tbilisi', '2025'],      folder: 'system', photos: [] },
-        { id: 'v3', title: 'Tomorrow Has Already Happened', meta: ['Version 3', 'DDD Kunst House, Yerevan', '2025'],  folder: 'system', photos: [16,17,18,19,20,21,22] },
-        { id: 'v2', title: 'Salt Room',                     meta: ['Version 2', 'Sister Room Space, Tbilisi', '2024'], folder: 'system', photos: [1,2,3,4,5,6,7,8,9] },
+        { id: 'v4', title: 'New Locality',                  meta: ['Version 4', 'The Gallery, Tbilisi', '2025'],      folder: 'system', photos: [16,17,18,19,20,21,22] },
+        { id: 'v3', title: 'Tomorrow Has Already Happened', meta: ['Version 3', 'DDD Kunst House, Yerevan', '2025'],  folder: 'system', photos: [] },
+        { id: 'v2', title: 'Salt Room',                     meta: ['Version 2', 'Sisters Room Space, Tbilisi', '2024'], folder: 'system', photos: [1,2,3,4,5,6,7,8,9] },
         { id: 'v1', title: 'Ordinary Things',               meta: ['Version 1', 'DK Gromov, St. Petersburg', '2019'], folder: 'system', photos: [10,11,12,13,14,15] },
       ] },
   };
@@ -1064,6 +1065,10 @@
   document.getElementById('nextPill').href = `work.html?s=${nextSlug}`;
   document.getElementById('lbNwTitle').textContent = nextWork.title;
   document.getElementById('lbNw').href = `work.html?s=${nextSlug}`;
+
+  // no hanging prepositions / short words at line ends; keep a dash with the word before it
+  const SHORT = /(?<=^|[\s\u00a0(“"])(a|an|the|of|in|on|at|to|by|as|is|it|or|and|but|for|nor|so|yet|if|be|we|i|do|my|no|up|its|via|with|from|into|over|than|that|this|was|are|has|had|not|all|can|one|two|her|his|our|out|who|how|may|new|old|each|like|both|through) /gi;
+  const tidy = t => t.replace(SHORT, '$1\u00a0').replace(/ —/g, '\u00a0—');
 
   // Work texts — from Polina's portfolio (POLINA_ORLOVA2026.pdf)
   const TEXTS = {
@@ -1126,7 +1131,7 @@
       places: [
         'Version 4 — The Gallery, “New Locality”, 2025',
         'Version 3 — DDD Kunst House, “Tomorrow Has Already Happened”, 2025',
-        'Version 2 — Sister Room Space, “Salt Room”, 2024',
+        'Version 2 — Sisters Room Space, “Salt Room”, 2024',
         'Version 1 — DK Gromov, “Ordinary Things”, 2019'
       ],
       text: [
@@ -1146,7 +1151,7 @@
       info.places.forEach(t => add(t));
     }
     const box = document.getElementById('workText');
-    info.text.forEach(t => { const pp = document.createElement('p'); pp.textContent = t; box.appendChild(pp); });
+    info.text.forEach(t => { const pp = document.createElement('p'); pp.textContent = tidy(t); box.appendChild(pp); });
     document.getElementById('workInfo').hidden = false;
   }
 
@@ -1429,7 +1434,7 @@
     if (t) {
       const box = document.createElement('div');
       box.className = 'work-text';
-      t.text.forEach(x => { const pp = document.createElement('p'); pp.textContent = x; box.appendChild(pp); });
+      t.text.forEach(x => { const pp = document.createElement('p'); pp.textContent = tidy(x); box.appendChild(pp); });
       sec.appendChild(box);
     }
     return sec;
