@@ -824,6 +824,9 @@
       display: flex; align-items: center; justify-content: center;
       transition-property: background-color, transform; transition-duration: .25s;
     }
+    video::-webkit-media-controls-start-playback-button,
+    video::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; }
+    .gallery-item--video { cursor: pointer; }
     .gallery-play svg { width: 22px; height: 22px; margin-left: 3px; }
     @media (hover: hover) { .gallery-item--video:hover .gallery-play { background: rgba(0,0,0,.4); } }
     .gallery-item--video:active .gallery-play { transform: translate(-50%, -50%) scale(.94); }
@@ -1383,15 +1386,14 @@
     v.src = base + '.mp4';
     v.poster = base + '.jpg';
     v.muted = true; v.loop = true; v.playsInline = true;
-    v.setAttribute('playsinline', '');
+    v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
     v.preload = 'metadata';
     item.appendChild(v);
-    const btn = document.createElement('button');
-    btn.className = 'gallery-play';
-    btn.setAttribute('aria-label', 'Watch video');
-    btn.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 4.2v11.6L15.5 10z"/></svg>';
-    item.appendChild(btn);
     item.addEventListener('click', () => openVp && openVp(base + '.mp4', false));
+    item.tabIndex = 0;
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', 'Watch video');
+    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openVp && openVp(base + '.mp4', false); } });
     // play silently while on screen
     new IntersectionObserver(e => { e[0].isIntersecting ? v.play().catch(() => {}) : v.pause(); }, { threshold: .25 }).observe(item);
     return item;
