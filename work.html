@@ -252,6 +252,17 @@
       font-family: var(--sans); font-size: 12px; letter-spacing: .02em; line-height: 1.5;
       color: var(--dim);
     }
+    .work-part { margin: 0 0 32px; max-width: 680px; }
+    .work-part--next { margin-top: 112px; padding-top: 48px; border-top: 1px solid var(--rule); max-width: none; }
+    .work-part--next > * { max-width: 680px; }
+    .work-part-title { font-family: var(--disp); font-weight: 400; font-style: italic; font-size: clamp(28px, 3vw, 40px); line-height: 1.1; letter-spacing: -.01em; }
+    .work-part-meta { margin-top: 10px; font-family: var(--sans); font-size: 12px; letter-spacing: .02em; line-height: 1.5; color: var(--dim); display: flex; flex-wrap: wrap; gap: 2px 20px; }
+    .work-part .work-text { margin-top: 22px; }
+    @media (max-width: 540px) {
+      .work-part { margin: 12px 20px 24px; }
+      .work-part--next { margin: 56px 0 24px; padding: 32px 20px 0; }
+      .work-part-meta { flex-direction: column; gap: 1px; }
+    }
     .work-medium:empty { display: none; }
     .work-medium:empty + .work-text { margin-top: 0; }
     .work-medium span { display: block; }
@@ -1001,18 +1012,26 @@
 
 <script>
   const WORKS = {
-    'depth-of-the-inner-voice': { title: 'Depth of the Inner Voice', year: '2025', count: 23, video: true, credits: 'Photo & Video: Roma Renton' },
+    'depth-of-the-inner-voice': { title: 'Depth of the Inner Voice', year: '2020 / 2025', count: 23, video: true, credits: 'Photo & Video: Roma Renton',
+      // the same mirror work, shown twice in two different forms
+      parts: [
+        { id: 'voice', title: 'Depth of the Inner Voice', meta: ['2025', 'Mirrors, hand engraving, chromed steel'], text: 'depth-of-the-inner-voice', folder: 'depth-of-the-inner-voice', count: 23 },
+        { id: 'world', title: 'Depth of the Inner World', meta: ['2020', 'Mirrors, sandblasting, chromed steel', 'Photo: Roma Renton'], text: 'depth-of-the-inner-world', folder: 'depth-of-the-inner-world', count: 10 },
+      ] },
     'quiet':                    { title: 'Quiet Damage',              year: '2026', count: 6,  video: false },
     'under-the-skin-of-the-garden': { title: 'Under the Skin of a Garden', year: '2025', count: 5, video: false },
     'choir':                    { title: 'Choir',                     year: '2025', count: 6,  video: false },
     'chamber-of-memory':        { title: 'Chamber of Memory',         year: '2025', count: 1,  video: false, lightHero: true },
     'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true, sound: true, clips: 5,  credits: 'Video: Daria Vengerskaya, Merry Manyface · Photo: Liza New Fire' },
-    'depth-of-the-inner-world': { title: 'Depth of the Inner World',  year: '2020', count: 10, video: false, credits: 'Photo: Roma Renton' },
     'system':                   { title: 'Reference System',                  year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton' },
   };
 
   // Get slug from URL
-  const slug = new URLSearchParams(location.search).get('s') || 'depth-of-the-inner-voice';
+  // old links: Depth of the Inner World now lives as the second part of Depth of the Inner Voice
+  const ALIASES = { 'depth-of-the-inner-world': ['depth-of-the-inner-voice', 'world'] };
+  let slug = new URLSearchParams(location.search).get('s') || 'depth-of-the-inner-voice';
+  let jumpToPart = location.hash.slice(1) || null;
+  if (ALIASES[slug]) { [slug, jumpToPart] = ALIASES[slug]; history.replaceState(null, '', `work.html?s=${slug}#${jumpToPart}`); }
   const work = WORKS[slug] || WORKS['depth-of-the-inner-voice'];
 
 
@@ -1105,12 +1124,12 @@
       ]
     }
   };
-  const info = TEXTS[slug];
+  const info = work.parts ? (work.parts[0].text ? null : TEXTS[slug]) : TEXTS[slug];
   if (info) {
     const med = document.getElementById('workMedium');
     const add = (t, cls) => { const sp = document.createElement('span'); sp.textContent = t; if (cls) sp.className = cls; med.appendChild(sp); };
     document.getElementById('heroMedium').textContent = info.medium;
-    if (info.places && info.places.length) {
+    if (info.places && info.places.length && !work.parts) {
       if (info.placesLabel) add(info.placesLabel, 'wm-label');
       info.places.forEach(t => add(t));
     }
@@ -1312,13 +1331,19 @@
     hero.prepend(img);
   }
 
-  // Gallery
-  function imgUrl(n) {
-    return `works/images/${slug}/${String(n).padStart(2,'0')}.jpg`;
-  }
+  // Gallery — one list of photos for the lightbox; on screen it can be split into parts
+  // (versions / exhibitions), each with its own heading, text and photo row.
+  const PARTS = work.parts || [{ folder: slug, count: work.count }];
+  const PHOTOS = [];
+  PARTS.forEach((part, pi) => {
+    const nums = part.photos || Array.from({ length: part.count }, (_, k) => k + 1);
+    nums.forEach(n => PHOTOS.push({ url: `works/images/${part.folder}/${String(n).padStart(2,'0')}.jpg`, part: pi }));
+  });
+  const TOTAL = PHOTOS.length;
+  function imgUrl(n) { return PHOTOS[n - 1].url; }
 
   const grid = document.getElementById('galleryGrid');
-  document.getElementById('galleryCount').textContent = `${work.count} images`;
+  document.getElementById('galleryCount').textContent = `${TOTAL} images`;
 
   function makeItem(i, ratio) {
     const item = document.createElement('div');
@@ -1334,7 +1359,7 @@
     item.addEventListener('click', () => openLb(i - 1));
     item.tabIndex = 0;
     item.setAttribute('role', 'button');
-    item.setAttribute('aria-label', `Open photo ${i} of ${work.count}`);
+    item.setAttribute('aria-label', `Open photo ${i} of ${TOTAL}`);
     item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(i - 1); } });
     return item;
   }
@@ -1372,23 +1397,35 @@
     });
   }
 
-  // Layout: first photo full width; then alternate full / pair.
-  // A pair is only made from two photos of the same orientation, so neither gets tiny.
-  const clipBase = n => `works/video/${slug}/clip-${n}`;
-  const clipCount = work.clips || 0;
-  const clipRatio = n => new Promise(res => {
-    const t = new Image();
-    t.onload = () => res(t.naturalWidth / t.naturalHeight || .75);
-    t.onerror = () => res(.75);
-    t.src = clipBase(n) + '.jpg';
-  });
-  Promise.all([
-    ...Array.from({ length: clipCount }, (_, k) => clipRatio(k + 1)),
-    ...Array.from({ length: work.count }, (_, k) => imgRatio(k + 1)),
-  ]).then(all => {
-    const entries = all.map((ratio, k) => k < clipCount
-      ? { ratio, clip: true, make: () => makeVideoItem(ratio, clipBase(k + 1)) }
-      : { ratio, make: () => makeItem(k - clipCount + 1, ratio) });
+  // Part heading: title, a meta line (year · medium · place), optional text
+  function makePartHead(part) {
+    const sec = document.createElement('section');
+    sec.className = 'work-part';
+    if (part.id) sec.id = part.id;
+    if (part.title) {
+      const h = document.createElement('h2');
+      h.className = 'work-part-title';
+      h.textContent = part.title;
+      sec.appendChild(h);
+    }
+    if (part.meta) {
+      const m = document.createElement('p');
+      m.className = 'work-part-meta';
+      part.meta.forEach(t => { const sp = document.createElement('span'); sp.textContent = t; m.appendChild(sp); });
+      sec.appendChild(m);
+    }
+    const t = part.text && TEXTS[part.text];
+    if (t) {
+      const box = document.createElement('div');
+      box.className = 'work-text';
+      t.text.forEach(x => { const pp = document.createElement('p'); pp.textContent = x; box.appendChild(pp); });
+      sec.appendChild(box);
+    }
+    return sec;
+  }
+
+  // Layout: alternate full / pair; a pair is only made from two photos of the same orientation.
+  function layoutRow(entries, gridEl) {
     const portrait = r => r < 1;
     let i = 0, lastWasPair = true;
     while (i < entries.length) {
@@ -1399,11 +1436,49 @@
                       portrait(entries[i].ratio) === portrait(entries[i + 1].ratio);
       const n = canPair ? 2 : 1;
       for (let k = 0; k < n; k++) row.appendChild(entries[i + k].make());
-      grid.appendChild(row);
+      gridEl.appendChild(row);
       lastWasPair = canPair;
       // a lone portrait would be huge at full width — cap its size
       if (n === 1 && portrait(entries[i].ratio)) row.classList.add('gallery-row--solo-portrait');
       i += n;
+    }
+  }
+
+  const clipBase = n => `works/video/${slug}/clip-${n}`;
+  const clipCount = work.clips || 0;
+  const clipRatio = n => new Promise(res => {
+    const t = new Image();
+    t.onload = () => res(t.naturalWidth / t.naturalHeight || .75);
+    t.onerror = () => res(.75);
+    t.src = clipBase(n) + '.jpg';
+  });
+  Promise.all([
+    Promise.all(Array.from({ length: clipCount }, (_, k) => clipRatio(k + 1))),
+    Promise.all(PHOTOS.map((_, k) => imgRatio(k + 1))),
+  ]).then(([clipRatios, photoRatios]) => {
+    let anchor = grid;
+    PARTS.forEach((part, pi) => {
+      const entries = [];
+      if (pi === 0) clipRatios.forEach((ratio, k) => entries.push({ ratio, clip: true, make: () => makeVideoItem(ratio, clipBase(k + 1)) }));
+      PHOTOS.forEach((ph, k) => { if (ph.part === pi) entries.push({ ratio: photoRatios[k], make: () => makeItem(k + 1, photoRatios[k]) }); });
+      let gridEl = grid;
+      if (work.parts) {
+        const head = makePartHead(part);
+        if (pi > 0) {
+          head.classList.add('work-part--next');
+          gridEl = document.createElement('div');
+          gridEl.className = 'gallery-grid';
+          anchor.after(head); head.after(gridEl);
+        } else {
+          grid.before(head);
+        }
+      }
+      layoutRow(entries, gridEl);
+      anchor = gridEl;
+    });
+    if (jumpToPart) {
+      const target = document.getElementById(jumpToPart);
+      if (target) requestAnimationFrame(() => window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 72 }));
     }
   });
 
@@ -1422,7 +1497,7 @@
 
   // phones get an extra "next work" slide after the last photo
   const isPhone = () => window.matchMedia('(max-width: 768px)').matches;
-  const lastIdx = () => isPhone() ? work.count : work.count - 1;
+  const lastIdx = () => isPhone() ? TOTAL : TOTAL - 1;
   const nextHref = `work.html?s=${nextSlug}`;
   document.getElementById('lbEndTitle').textContent = nextWork.title;
   document.getElementById('lbEndImg').src = `works/images/${nextSlug}/01.jpg`;
@@ -1448,13 +1523,13 @@
     lbImg.classList.remove('lb-img--in');
   }
   function showLb() {
-    const onEnd = lbIdx === work.count;            // phone end slide
+    const onEnd = lbIdx === TOTAL;            // phone end slide
     lbEnd.hidden = !onEnd;
     lbImg.hidden = onEnd;
     lbCounter.style.visibility = onEnd ? 'hidden' : '';
     lbPrev.hidden = lbIdx === 0;
     if (onEnd) { lbNext.hidden = true; lbNwEl.hidden = true; return; }
-    lbCounter.textContent = `${lbIdx + 1} / ${work.count}`;
+    lbCounter.textContent = `${lbIdx + 1} / ${TOTAL}`;
     const isLast = lbIdx === lastIdx();
     lbNext.hidden = isLast;
     lbNwEl.hidden = !isLast;
