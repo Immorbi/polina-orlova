@@ -238,6 +238,23 @@
 
     .gallery-header { display: none; }
 
+    /* ── work text (from the portfolio) ── */
+    .work-info { margin: 0 0 72px; max-width: 680px; }
+    .work-info[hidden] { display: none; }
+    .work-medium {
+      font-family: var(--sans); font-size: 12px; letter-spacing: .02em; line-height: 1.5;
+      color: var(--dim);
+    }
+    .work-medium span { display: block; }
+    .work-medium span + span { margin-top: 2px; }
+    .work-medium .wm-label { margin-top: 14px; color: var(--ink); }
+    .work-text { margin-top: 28px; font-family: var(--serif); font-size: clamp(17px, 1.5vw, 19px); line-height: 1.6; color: var(--ink); }
+    .work-text p + p { margin-top: 1em; }
+    @media (max-width: 540px) {
+      .work-info { margin: 12px 20px 40px; }
+      .work-text { margin-top: 20px; font-size: 16.5px; line-height: 1.55; }
+    }
+
     .gallery-label {
       font-family: var(--mono);
       font-size: 9px;
@@ -601,6 +618,7 @@
 
     /* on work pages sit above the Next Work pill */
     @media (min-width: 769px) { .to-top { right: 60px; bottom: 118px; } }
+    @media (max-width: 768px) { .to-top { bottom: calc(78px + env(safe-area-inset-bottom)); } }
 
     /* ── hero "watch with sound" button ── */
     .hero-play {
@@ -867,6 +885,10 @@
 
 <!-- GALLERY -->
 <div class="gallery-section">
+  <section class="work-info" id="workInfo" hidden>
+    <p class="work-medium" id="workMedium"></p>
+    <div class="work-text" id="workText"></div>
+  </section>
   <div class="gallery-header">
     <span class="gallery-label" id="galleryLabel">Images</span>
     <span class="gallery-count" id="galleryCount"></span>
@@ -969,13 +991,13 @@
 <script>
   const WORKS = {
     'depth-of-the-inner-voice': { title: 'Depth of the Inner Voice', year: '2025', count: 23, video: true, credits: 'Photo & Video: Roma Renton' },
-    'quiet':                    { title: 'Quiet',                     year: '2025', count: 6,  video: false },
-    'under-the-skin-of-the-garden': { title: 'Under the Skin of the Garden', year: '2025', count: 5, video: false },
+    'quiet':                    { title: 'Quiet Damage',              year: '2026', count: 6,  video: false },
+    'under-the-skin-of-the-garden': { title: 'Under the Skin of a Garden', year: '2025', count: 5, video: false },
     'choir':                    { title: 'Choir',                     year: '2025', count: 6,  video: false },
     'chamber-of-memory':        { title: 'Chamber of Memory',         year: '2025', count: 1,  video: false, lightHero: true },
     'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true, sound: true, clips: 5,  credits: 'Video: Daria Vengerskaya, Merry Manyface · Photo: Liza New Fire' },
     'depth-of-the-inner-world': { title: 'Depth of the Inner World',  year: '2020', count: 10, video: false, credits: 'Photo: Roma Renton' },
-    'system':                   { title: 'System',                    year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton' },
+    'system':                   { title: 'Reference System',                  year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton' },
   };
 
   // Get slug from URL
@@ -1000,6 +1022,91 @@
   document.getElementById('nextPill').href = `work.html?s=${nextSlug}`;
   document.getElementById('lbNwTitle').textContent = nextWork.title;
   document.getElementById('lbNw').href = `work.html?s=${nextSlug}`;
+
+  // Work texts — from Polina's portfolio (POLINA_ORLOVA2026.pdf)
+  const TEXTS = {
+    'depth-of-the-inner-voice': {
+      medium: 'Mirrors, hand engraving, chromed steel',
+      text: [
+        'Depth of the Inner Voice explores reflection as a boundary between the internal and the external. The cosmetic mirror is used not as a functional object, but as a symbol of a standardized, mass-produced form. Engraved masks on each mirror represent inner thoughts. Though these images exist on the surface, they belong to the individual’s inner space.',
+        'Light interacts with the engravings, casting projections that shift with the angle of the beam. The mirror becomes a tool for self-reflection, allowing the viewer to encounter not the exterior, but states of consciousness.'
+      ]
+    },
+    'quiet': {
+      medium: 'Fabric, candle soot, light setup',
+      places: ['Helikon Art Residency, Kocaeli, Turkey'],
+      text: [
+        'Quiet Damage is about memory and marks that stay with us. I think of fabric as something similar to skin. Like our skin, it keeps the marks of what we experience, both inside and outside. The soot, burn marks, and small holes show these traces.',
+        'I am interested not in the moment of damage, but in what comes after. Like the human body, the fabric continues to exist, carrying the memory of what has changed it.'
+      ]
+    },
+    'under-the-skin-of-the-garden': {
+      medium: 'Threads, garden, light setup',
+      places: ['Castello Art Residency, Umbria, Italy'],
+      text: [
+        'It consists of threads stretched between the branches of an olive tree and the ground, symbolizing flows of energy. They remind me of vertical lines of rain or rays of sunlight.',
+        'This installation serves as a metaphor for hidden codes, fleeting moments, and the fragile boundaries of our interaction with the world.'
+      ]
+    },
+    'choir': {
+      medium: 'Threads, nails, spray paint',
+      places: ['Rubezh exhibition'],
+      text: [
+        'A choir is many voices breathing as one. Each voice stays separate, like threads crossing an image. This work is based on the image of a group of people singing — a repeating pattern of open mouths is spray-painted onto a curtain of thin threads.',
+        'The lines create the surface where the image appears through breaking the form itself. Each of us is a fragile thread, yet together we form a fabric that holds sound. People sing through boundaries, through lines that block and connect.'
+      ]
+    },
+    'chamber-of-memory': {
+      medium: 'Threads, spray paint',
+      places: ['The Gallery, exhibition “In Good Hands”, Tbilisi'],
+      text: [
+        'The installation Chamber of Memory explores themes of personal boundaries, memory, and the passage of time. Unfolding in a small, enclosed space, it becomes a visual metaphor for the inner world — intimate, hidden from outside view.',
+        'A dense curtain of black threads stretches from ceiling to floor, creating both a physical and visual barrier between the viewer and the depth of the room. Abstract stains appear on the threads, resembling blurred fragments of memories — images that surface, fade, and return again.'
+      ]
+    },
+    'shape-of-a-human': {
+      medium: 'Gypsum gold-plated frames, textile mesh, threads',
+      text: [
+        'In this project, I imagine a future in which human existence evolves through transformation. I explore progress and achievement across different fields as expressed through changes in the body.',
+        'I envision a human form capable of adapting through cognition — reshaping itself in response to need. In this way, the body becomes a universal, self-designed structure, enabling continuous growth, new achievements, and ongoing transformation.'
+      ]
+    },
+    'depth-of-the-inner-world': {
+      medium: 'Mirrors, sandblasting, chromed steel',
+      text: [
+        'The sculptures are based on mirrors featuring a cosmetic mask as a standardized symbol. The imagery is created through sandblasting, producing a texture that echoes the surface of the mask.',
+        'As viewers look into each sculpture, they see themselves through a barrier — one that reflects superficial perception. Yet, by looking more closely, deeper layers begin to emerge.'
+      ]
+    },
+    'system': {
+      medium: 'Fabric, drip system, liquid dyes',
+      placesLabel: 'Shown',
+      places: [
+        'Version 4 — The Gallery, “New Locality”, 2025',
+        'Version 3 — DDD Kunst House, “Tomorrow Has Already Happened”, 2025',
+        'Version 2 — Sister Room Space, “Salt Room”, 2024',
+        'Version 1 — DK Gromov, “Ordinary Things”, 2019'
+      ],
+      text: [
+        'A fabric-dyeing system in constant transformation gradually forms an abstract panel as the pigments in its drip mechanisms are exhausted. The installation materializes the passage of time, turning an ephemeral process into a tangible record.',
+        'Initiated by the artist yet beyond their control, droplets fall, interact with the surface, and leave traces — marks of chance, pauses, and density. This evolving process cannot be stopped or repeated, existing as a testimony to time itself.',
+        'The work invites viewers to witness an image in flux, shifting focus from the final outcome to the unrepeatable journey.'
+      ]
+    }
+  };
+  const info = TEXTS[slug];
+  if (info) {
+    const med = document.getElementById('workMedium');
+    const add = (t, cls) => { const sp = document.createElement('span'); sp.textContent = t; if (cls) sp.className = cls; med.appendChild(sp); };
+    add(info.medium);
+    if (info.places) {
+      if (info.placesLabel) add(info.placesLabel, 'wm-label');
+      info.places.forEach(t => add(t));
+    }
+    const box = document.getElementById('workText');
+    info.text.forEach(t => { const pp = document.createElement('p'); pp.textContent = t; box.appendChild(pp); });
+    document.getElementById('workInfo').hidden = false;
+  }
 
   // Hero
   document.getElementById('heroTitle').textContent = work.title;
