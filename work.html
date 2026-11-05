@@ -260,9 +260,11 @@
     .work-part .work-text { margin-top: 22px; }
     .gallery-grid:empty { display: none; }
     .gallery-grid:empty + .work-part--next { margin-top: 56px; }
+    .work-part:has(+ .gallery-grid:empty) { margin-bottom: 0; }
+    @media (max-width: 540px) { .gallery-grid:empty + .work-part--next { margin-top: 36px; padding-top: 28px; } .work-part-meta { flex-direction: row !important; gap: 0 14px !important; } }
     @media (max-width: 540px) {
       .work-part { margin: 12px 20px 24px; }
-      .work-part--next { margin: 56px 0 24px; padding: 32px 20px 0; }
+      .work-part--next { margin: 36px 0 20px; padding: 32px 20px 0; }
       .work-part-meta { flex-direction: column; gap: 1px; }
     }
     .work-medium:empty { display: none; }
