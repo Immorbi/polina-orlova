@@ -243,6 +243,13 @@
       margin: 0 auto;
     }
 
+    /* gallery loading */
+    .gallery-loading { padding: 8px 0 48px; transition: opacity .3s ease; }
+    .gallery-loading--done { opacity: 0; }
+    .gallery-loading-bar { height: 2px; background: var(--rule); overflow: hidden; max-width: 680px; }
+    .gallery-loading-bar span { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .25s ease-out; }
+    .gallery-loading-text { margin-top: 12px; font-family: var(--sans); font-size: 12px; letter-spacing: .02em; color: var(--dim); font-variant-numeric: tabular-nums; }
+    @media (max-width: 540px) { .gallery-loading { padding: 8px 20px 36px; } }
     .gallery-header { display: none; }
 
     /* ── work text (from the portfolio) ── */
@@ -1469,30 +1476,63 @@
     t.onerror = () => res(.75);
     t.src = clipBase(n) + '.jpg';
   });
-  Promise.all([
-    Promise.all(Array.from({ length: clipCount }, (_, k) => clipRatio(k + 1))),
-    Promise.all(PHOTOS.map((_, k) => imgRatio(k + 1))),
-  ]).then(([clipRatios, photoRatios]) => {
-    let anchor = grid;
-    PARTS.forEach((part, pi) => {
-      const entries = [];
-      if (pi === 0) clipRatios.forEach((ratio, k) => entries.push({ ratio, clip: true, make: () => makeVideoItem(ratio, clipBase(k + 1)) }));
-      PHOTOS.forEach((ph, k) => { if (ph.part === pi) entries.push({ ratio: photoRatios[k], make: () => makeItem(k + 1, photoRatios[k]) }); });
-      let gridEl = grid;
-      if (work.parts) {
-        const head = makePartHead(part);
-        if (pi > 0) {
-          head.classList.add('work-part--next');
-          gridEl = document.createElement('div');
-          gridEl.className = 'gallery-grid';
-          anchor.after(head); head.after(gridEl);
-        } else {
-          grid.before(head);
-        }
+  // Headings and texts go in straight away; each part's photos are laid out as soon as
+  // that part's images have loaded (their proportions decide the rows), with a progress bar meanwhile.
+  function makeLoader() {
+    const el = document.createElement('div');
+    el.className = 'gallery-loading';
+    el.setAttribute('role', 'progressbar');
+    el.setAttribute('aria-label', 'Loading photos');
+    el.innerHTML = '<div class="gallery-loading-bar"><span></span></div><p class="gallery-loading-text">Loading photos 0%</p>';
+    return el;
+  }
+  const track = (promises, loader) => {
+    let done = 0;
+    const fill = loader.querySelector('span'), label = loader.querySelector('p');
+    const tick = () => {
+      done++;
+      const pct = Math.round(done / promises.length * 100);
+      fill.style.transform = `scaleX(${pct / 100})`;
+      label.textContent = `Loading photos ${pct}%`;
+      loader.setAttribute('aria-valuenow', pct);
+    };
+    promises.forEach(pr => pr.then(tick));
+    return Promise.all(promises);
+  };
+
+  const photoRatioPromises = PHOTOS.map((_, k) => imgRatio(k + 1));
+  const partJobs = [];
+  let anchor = grid;
+  PARTS.forEach((part, pi) => {
+    let gridEl = grid;
+    if (work.parts) {
+      const head = makePartHead(part);
+      if (pi > 0) {
+        head.classList.add('work-part--next');
+        gridEl = document.createElement('div');
+        gridEl.className = 'gallery-grid';
+        anchor.after(head); head.after(gridEl);
+      } else {
+        grid.before(head);
       }
+    }
+    anchor = gridEl;
+    const idx = PHOTOS.map((ph, k) => ph.part === pi ? k : -1).filter(k => k >= 0);
+    const clipPs = pi === 0 ? Array.from({ length: clipCount }, (_, k) => clipRatio(k + 1)) : [];
+    const photoPs = idx.map(k => photoRatioPromises[k]);
+    if (!clipPs.length && !photoPs.length) return;
+    const loader = makeLoader();
+    gridEl.before(loader);
+    partJobs.push(track([...clipPs, ...photoPs], loader).then(all => {
+      const entries = [];
+      all.slice(0, clipPs.length).forEach((ratio, k) => entries.push({ ratio, clip: true, make: () => makeVideoItem(ratio, clipBase(k + 1)) }));
+      all.slice(clipPs.length).forEach((ratio, j) => { const k = idx[j]; entries.push({ ratio, make: () => makeItem(k + 1, ratio) }); });
       layoutRow(entries, gridEl);
-      anchor = gridEl;
-    });
+      loader.classList.add('gallery-loading--done');
+      setTimeout(() => loader.remove(), 350);
+    }));
+  });
+  Promise.all(partJobs).then(() => {
     if (jumpToPart) {
       const target = document.getElementById(jumpToPart);
       if (target) requestAnimationFrame(() => window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 72 }));
