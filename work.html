@@ -265,6 +265,7 @@
     .work-part-title { font-family: var(--disp); font-weight: 400; font-style: italic; font-size: clamp(28px, 3vw, 40px); line-height: 1.1; letter-spacing: -.01em; }
     .work-part-meta { margin-top: 10px; font-family: var(--sans); font-size: 12px; letter-spacing: .02em; line-height: 1.5; color: var(--dim); display: flex; flex-wrap: wrap; gap: 2px 20px; }
     .work-part .work-text { margin-top: 22px; }
+    .work-part-exhibited { margin-top: 18px; }
     .gallery-grid:empty { display: none; }
     .gallery-grid:empty + .work-part--next { margin-top: 56px; }
     .work-part:has(+ .gallery-grid:empty) { margin-bottom: 0; }
@@ -1038,7 +1039,7 @@
       // the same mirror work, shown twice in two different forms
       parts: [
         { id: 'voice', title: 'Depth of the Inner Voice', meta: ['2025', 'Mirrors, hand engraving, chromed steel'], text: 'depth-of-the-inner-voice', folder: 'depth-of-the-inner-voice', count: 23 },
-        { id: 'world', title: 'Depth of the Inner World', meta: ['*The Depth of the Inner World*, SKLAD 17 Gallery, St.\u00a0Petersburg, Russia, 2020', 'Mirrors, sandblasting, chromed steel', 'Photo: Roma Renton'], text: 'depth-of-the-inner-world', folder: 'depth-of-the-inner-world', count: 10 },
+        { id: 'world', title: 'Depth of the Inner World', meta: ['2020', 'Mirrors, sandblasting, chromed steel', 'Photo: Roma Renton'], exhibited: '*The Depth of the Inner World*, SKLAD 17 Gallery, St.\u00a0Petersburg, Russia, 2020', text: 'depth-of-the-inner-world', folder: 'depth-of-the-inner-world', count: 10 },
       ] },
     'quiet':                    { title: 'Quiet Damage',              year: '2026', count: 6,  video: false },
     'under-the-skin-of-the-garden': { title: 'Under the Skin of a Garden', year: '2025', count: 5, video: false },
@@ -1058,9 +1059,9 @@
     'system':                   { title: 'Reference System', year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton',
       // one drip system, shown at different exhibitions — photos grouped by show, newest first
       parts: [
-        { id: 'v4', title: 'New Locality',                  meta: ['The Gallery, Tbilisi, Georgia, 2025', 'Version 4'],      folder: 'system', photos: [17,18,19,20,21,22] },
-        { id: 'v2', title: 'Salt Room',                     meta: ['Sisters Room Space, Tbilisi, Georgia, 2024', 'Version 2'], folder: 'system', photos: [1,2,3,4,5,6,7,8,9] },
-        { id: 'v1', title: 'Ordinary Things',               meta: ['DK Gromov, St.\u00a0Petersburg, Russia, 2019', 'Version 1'], folder: 'system', photos: [10,11,12,13,14,15,16] },
+        { id: 'v4', title: 'New Locality',                  meta: ['2025', 'Version 4'], exhibited: '*New Locality*, The Gallery, Tbilisi, Georgia, 2025',      folder: 'system', photos: [17,18,19,20,21,22] },
+        { id: 'v2', title: 'Salt Room',                     meta: ['2024', 'Version 2'], exhibited: '*Salt Room*, Sisters Room Space, Tbilisi, Georgia, 2024', folder: 'system', photos: [1,2,3,4,5,6,7,8,9] },
+        { id: 'v1', title: 'Ordinary Things',               meta: ['2019', 'Version 1'], exhibited: '*Ordinary Things*, DK Gromov, St.\u00a0Petersburg, Russia, 2019', folder: 'system', photos: [10,11,12,13,14,15,16] },
       ] },
   };
 
@@ -1457,6 +1458,13 @@
       m.className = 'work-part-meta';
       part.meta.forEach(t => { const sp = document.createElement('span'); fillEm(sp, t); m.appendChild(sp); });
       sec.appendChild(m);
+    }
+    if (part.exhibited) {             // same "Exhibited" block as on single works
+      const ex = document.createElement('p');
+      ex.className = 'work-medium work-part-exhibited';
+      const lab = document.createElement('span'); lab.className = 'wm-label'; lab.textContent = 'Exhibited'; ex.appendChild(lab);
+      const v = document.createElement('span'); fillEm(v, part.exhibited); ex.appendChild(v);
+      sec.appendChild(ex);
     }
     const t = part.text && TEXTS[part.text];
     if (t) {
