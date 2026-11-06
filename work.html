@@ -444,7 +444,8 @@
     .lb-btn--next { right: 0; }
     .lb-btn svg { width: 20px; height: 20px; }
     .lb-btn[hidden] { display: none; }
-    .lb-footer { height: 32px; flex-shrink: 0; }
+    .lb-footer { min-height: 32px; flex-shrink: 0; padding: 4px 20px 14px; text-align: center; font-family: var(--sans); font-size: 12px; letter-spacing: .02em; line-height: 1.4; color: rgba(255,255,255,.6); }
+    .lb-footer em { font-style: italic; color: rgba(255,255,255,.85); }
 
     /* lightbox next-work panel (shown at last photo) */
     .lb-nw {
@@ -1028,7 +1029,7 @@
       </svg>
     </a>
   </div>
-  <div class="lb-footer"></div>
+  <div class="lb-footer" id="lbCaption"></div>
 </div>
 
 <script>
@@ -1043,7 +1044,17 @@
     'under-the-skin-of-the-garden': { title: 'Under the Skin of a Garden', year: '2025', count: 5, video: false },
     'choir':                    { title: 'Choir',                     year: '2025', count: 6,  video: false },
     'chamber-of-memory':        { title: 'Chamber of Memory',         year: '2025', count: 1,  video: false, lightHero: true },
-    'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true, sound: true, clips: 5,  credits: 'Video: Merry Manyface · Photo: Liza New Fire, Daria Vengerskaya' },
+    'shape-of-a-human':         { title: 'Shape of a Human',          year: '2022', count: 19, video: true, sound: true, clips: 5,  credits: 'Video: Merry Manyface · Photo: Liza New Fire, Daria Vengerskaya',
+      // photo number → caption (*title*, year, size); 13–19 are installation views
+      captions: {
+        2: '*Mask*, 2022, 30 × 35 cm', 3: '*Mask*, 2022, 53 × 42 cm', 4: '*Mask 2*, 2022, 35 × 42 cm',
+        5: '*Portrait of a Man’s Hand*, 2022, 29 × 34 cm', 6: '*Portrait of a Woman’s Hand*, 2022, 29 × 34 cm',
+        7: '*Portrait of a Woman’s Hand*, 2022 (detail)', 8: '*Portrait of a Man’s Hand*, 2022 (detail)',
+        9: '*Portrait with Hands*, 2022, 29 × 34 cm', 10: '*Portrait of a Seven-Fingered Woman*, 2022, 43 × 53 cm',
+        11: '*Family Portrait*, 2022, 32 × 26 cm', 12: '*Person with Three Legs*, 2022, 43 × 52 cm',
+        13: 'Installation view', 14: 'Installation view', 15: 'Installation view', 16: 'Installation view',
+        17: 'Installation view', 18: 'Installation view', 19: 'Installation view'
+      } },
     'system':                   { title: 'Reference System', year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton',
       // one drip system, shown at different exhibitions — photos grouped by show, newest first
       parts: [
@@ -1371,7 +1382,7 @@
   const PHOTOS = [];
   PARTS.forEach((part, pi) => {
     const nums = part.photos || Array.from({ length: part.count }, (_, k) => k + 1);
-    nums.forEach(n => PHOTOS.push({ url: `works/images/${part.folder}/${String(n).padStart(2,'0')}.jpg`, part: pi }));
+    nums.forEach(n => PHOTOS.push({ url: `works/images/${part.folder}/${String(n).padStart(2,'0')}.jpg`, part: pi, caption: (work.captions || {})[n] || '' }));
   });
   const TOTAL = PHOTOS.length;
   function imgUrl(n) { return PHOTOS[n - 1].url; }
@@ -1387,7 +1398,7 @@
     item.style.setProperty('--r', ratio);
     const img = document.createElement('img');
     img.src = imgUrl(i);
-    img.alt = `${work.title} — ${i}`;
+    img.alt = PHOTOS[i - 1].caption ? `${work.title} — ${PHOTOS[i - 1].caption.replace(/\*/g, '')}` : `${work.title} — ${i}`;
     img.loading = 'lazy';
     item.appendChild(img);
     item.addEventListener('click', () => openLb(i - 1));
@@ -1553,6 +1564,7 @@
   const lbStage   = lbEl.querySelector('.lb-stage');
   const lbImg     = document.getElementById('lbImg');
   const lbTitle   = document.getElementById('lbTitle');
+  const lbCaption = document.getElementById('lbCaption');
   const lbCounter = document.getElementById('lbCounter');
   const lbClose   = document.getElementById('lbClose');
   const lbPrev    = document.getElementById('lbPrev');
@@ -1594,8 +1606,9 @@
     lbImg.hidden = onEnd;
     lbCounter.style.visibility = onEnd ? 'hidden' : '';
     lbPrev.hidden = lbIdx === 0;
-    if (onEnd) { lbNext.hidden = true; lbNwEl.hidden = true; return; }
+    if (onEnd) { lbCaption.textContent = ''; lbNext.hidden = true; lbNwEl.hidden = true; return; }
     lbCounter.textContent = `${lbIdx + 1} / ${TOTAL}`;
+    lbCaption.textContent = ''; fillEm(lbCaption, PHOTOS[lbIdx].caption);
     const isLast = lbIdx === lastIdx();
     lbNext.hidden = isLast;
     lbNwEl.hidden = !isLast;
