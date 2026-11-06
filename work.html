@@ -283,6 +283,11 @@
     .work-text p + p { margin-top: 1em; }
     .work-text p { text-wrap: pretty; }
     @media (min-width: 769px) { .work-text p { text-align: justify; } }
+    /* desktop: text column shares the photos' centre axis */
+    @media (min-width: 769px) {
+      .work-info, .work-part, .work-part--next > *, .gallery-loading-bar, .gallery-loading-text { margin-left: auto; margin-right: auto; max-width: 680px; }
+      .work-part--next { max-width: none; }
+    }
     @media (max-width: 540px) {
       .work-info { margin: 12px 20px 40px; }
       .work-text { margin-top: 20px; font-size: 16.5px; line-height: 1.55; }
