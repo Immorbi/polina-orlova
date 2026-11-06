@@ -1068,8 +1068,8 @@
   document.getElementById('lbNw').href = `work.html?s=${nextSlug}`;
 
   // no hanging prepositions / short words at line ends; keep a dash with the word before it
-  const SHORT = /(?<=^|[\s\u00a0(“"])(a|an|the|of|in|on|at|to|by|as|is|it|or|and|but|for|nor|so|yet|if|be|we|i|do|my|no|up|its|via|with|from|into|over|than|that|this|was|are|has|had|not|all|can|one|two|her|his|our|out|who|how|may|new|old|each|like|both|through) /gi;
-  const tidy = t => t.replace(SHORT, '$1\u00a0').replace(/ —/g, '\u00a0—');
+  const SHORT = /(^|[\s\u00a0(“"])(a|an|the|of|in|on|at|to|by|as|is|it|or|and|but|for|nor|so|yet|if|be|we|i|do|my|no|up|its|via|with|from|into|over|than|that|this|was|are|has|had|not|all|can|one|two|her|his|our|out|who|how|may|new|old|each|like|both|through) /gi;
+  const tidy = t => t.replace(SHORT, '$1$2\u00a0').replace(SHORT, '$1$2\u00a0').replace(/ —/g, '\u00a0—');
 
   // Work texts — from Polina's portfolio (POLINA_ORLOVA2026.pdf)
   const TEXTS = {
