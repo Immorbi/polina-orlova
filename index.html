@@ -195,7 +195,8 @@
       padding-bottom: 80px;
     }
 
-    /* statement panel — taller so text scrolls freely before snapping */
+    /* bio & statement panels — taller so text scrolls freely before snapping */
+    .panel--bio,
     .panel--statement {
       align-items: flex-start;
       padding-top: calc(var(--nav) + 10vh);
@@ -236,6 +237,7 @@
       line-height: 1.6;
       max-width: 680px;
     }
+    .bio-text p + p { margin-top: 1em; }
 
     /* statement */
     .statement-text {
@@ -508,6 +510,7 @@
     }
     @media (max-width: 640px) {
       .panel-grid { grid-template-columns: 1fr; gap: 16px 0; }
+      .panel--bio,
       .panel--statement { padding-top: calc(var(--nav) + 32px); padding-bottom: 48px; }
       /* CV peeks in under the works carousel; snap lands just below the nav */
       .panel--cv { padding-top: 28px; scroll-margin-top: var(--nav); }
@@ -650,13 +653,15 @@
           </div>
           <div>
             <p class="bio-tags"><span>Textiles</span><span>Installation</span><span>Material Transformation</span></p>
-            <p class="bio-text">
-              Ukrainian multidisciplinary artist working with textiles, installation,
-              and material transformation — including salt, mirror surfaces,
-              and drip-dyeing systems. In her practice, she explores the
-              <em>"architecture of tension"</em> — moments where strict structure meets
-              the unpredictability of the material and the process of decay.
-            </p>
+            <div class="bio-text">
+              <p>Polina Orlova (born 1989) is a Ukrainian multidisciplinary artist based in Tbilisi, Georgia.</p>
+              <p>In her artistic practice, Polina explores the relationship between structure and matter, time and physical processes, stability and decay. Working with textiles, installation and objects, she uses different materials and techniques, including weaving, embroidery, dyeing, mirror surfaces, salt, soot and drip-dyeing systems. She is interested in the properties of materials and how they change under different conditions, often taking on new and unexpected forms.</p>
+              <p>One of the central ideas in her practice is the <em>“architecture of tension”</em> — a state that appears between a human-made structure and the independent behaviour of materials. She creates situations in which an artwork does not remain in a fixed or final form, but becomes an open process influenced by time, light, chemical reactions and physical forces. Through damage, deformation, dissolution and gradual decay, Orlova explores how controlled forms can move towards instability and change.</p>
+              <p>After her initial studies in painting, she continued her education in applied arts and textile design. This background shaped her interest in materials, handmade processes and traditional craft techniques, which she combines with experimental approaches in her current practice.</p>
+              <p>Polina Orlova has taken part in numerous solo and group exhibitions, artist residencies and international art projects in Georgia, Armenia, Italy, Turkey, South Korea, Russia, Ukraine, Austria and Estonia. Her solo exhibitions include <em>Tomorrow Has Already Happened</em> at DDD Kunst House (Yerevan, 2025), <em>The Depth of the Inner World</em> at SKLAD 17 Gallery (St.&nbsp;Petersburg, 2020) and <em>System</em> at SKLAD 17 Gallery (St.&nbsp;Petersburg, 2019).</p>
+              <p>Her artist residencies include The Lost World Art Residency (Turkey, 2026), Castello Art Residency (Italy, 2025), Sleepover Artist Residency at DDD Kunst House (Armenia, 2025) and the Residency Program of the Vladimir Smirnov and Konstantin Sorokin Foundation (Moscow, 2015).</p>
+              <p>She continues to develop her multidisciplinary practice, exploring the possibilities of different materials and creating works in which physical processes become not only a method of making art but also an important part of the artwork itself.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -756,7 +761,7 @@
                 <div class="cv-block">
                   <p class="cv-block-title">Awards &amp; Grants</p>
                   <ul class="cv-list">
-                    <li><span class="cv-year">2015</span><span class="cv-entry">Special prize residence, Vladimir Smirnov and Konstantin Sorokin Foundation — Competition of Young Artists, New Projects for Anna Nova Gallery, St.&nbsp;Petersburg, Russia</span></li>
+                    <li><span class="cv-year">2015</span><span class="cv-entry">Special prize: residency in the workshops of the Vladimir Smirnov and Konstantin Sorokin Foundation. Competition of Young Artists, New Projects for Anna Nova Gallery, theme “Art and Education”, St.&nbsp;Petersburg, Russia</span></li>
                   </ul>
                 </div>
                 <div class="cv-block">
@@ -778,17 +783,17 @@
                   <ul class="cv-list">
                     <li><span class="cv-year">2026</span><span class="cv-entry">The Lost World, Rubezh × Helikon, Kocaeli, Turkey</span></li>
                     <li><span class="cv-year">2025</span><span class="cv-entry">Rubezh: Secret Revolution, Tbilisi, Georgia</span></li>
-                    <li><span class="cv-year">2025</span><span class="cv-entry">Utopia, Residency Ortachala / Object Community / Particles Here, Tbilisi, Georgia</span></li>
+                    <li><span class="cv-year">2025</span><span class="cv-entry">Utopia, Residency Ortachala, Object Community, Particles Here, Tbilisi, Georgia</span></li>
                     <li><span class="cv-year">2025</span><span class="cv-entry">In Good Hands, The Gallery, Tbilisi, Georgia</span></li>
                     <li><span class="cv-year">2025</span><span class="cv-entry">Hidden, Castello Art Residency, Umbria, Italy</span></li>
                     <li><span class="cv-year">2025</span><span class="cv-entry">New Locality, The Gallery (Artnomad curators), Tbilisi, Georgia</span></li>
                     <li><span class="cv-year">2024</span><span class="cv-entry">Salt Room, Sisters Room Space, Tbilisi, Georgia</span></li>
-                    <li><span class="cv-year">2023</span><span class="cv-entry">Anseong Art Prism, Anseong, South Korea</span></li>
+                    <li><span class="cv-year">2023</span><span class="cv-entry">Anseong Art Prism 2023, International Exhibition, Anseong, South Korea</span></li>
                     <li><span class="cv-year">2021</span><span class="cv-entry">The Thirty-Year-Old Generation in Contemporary Russian Art, Marble Palace, St.&nbsp;Petersburg, Russia</span></li>
                     <li><span class="cv-year">2019</span><span class="cv-entry">Ordinary Things, DK Gromov, St.&nbsp;Petersburg, Russia</span></li>
                     <li><span class="cv-year">2019</span><span class="cv-entry">Impulse, Kuryokhin Center for Contemporary Art, St.&nbsp;Petersburg, Russia</span></li>
                     <li><span class="cv-year">2019</span><span class="cv-entry">Levels, Stepan Razin Plant, St.&nbsp;Petersburg, Russia</span></li>
-                    <li><span class="cv-year">2018</span><span class="cv-entry">St.&nbsp;Petersburg Biennale of Museum Design, St.&nbsp;Petersburg, Russia</span></li>
+                    <li><span class="cv-year">2018</span><span class="cv-entry">3rd St.&nbsp;Petersburg Biennale of Museum Design, F.&nbsp;I.&nbsp;Chaliapin Museum, St.&nbsp;Petersburg, Russia</span></li>
                     <li><span class="cv-year">2018</span><span class="cv-entry">Awakening, Museum of Contemporary Art, Kyiv, Ukraine</span></li>
                     <li><span class="cv-year">2015</span><span class="cv-entry">Point of Contact, Vladimir Smirnov and Konstantin Sorokin Foundation, Moscow, Russia</span></li>
                     <li><span class="cv-year">2014</span><span class="cv-entry">Drip Irrigation, abandoned cinema "Selena", Kolchugino, Ukraine</span></li>
@@ -801,18 +806,17 @@
                     <li><span class="cv-year">2026</span><span class="cv-entry">The Lost World Art Residency, Rubezh × Helikon, Kocaeli, Turkey</span></li>
                     <li><span class="cv-year">2025</span><span class="cv-entry">Castello Art Residency, Umbria, Italy</span></li>
                     <li><span class="cv-year">2025</span><span class="cv-entry">Sleepover Artist Residency, DDD Kunst House, Yerevan, Armenia</span></li>
-                    <li><span class="cv-year">2015</span><span class="cv-entry">Residency Program, Vladimir Smirnov and Konstantin Sorokin Foundation, Moscow, Russia</span></li>
+                    <li><span class="cv-year">2015</span><span class="cv-entry">Residency in Art Workshops, Vladimir Smirnov and Konstantin Sorokin Foundation, Moscow, Russia</span></li>
                   </ul>
                 </div>
                 <div class="cv-block">
                   <p class="cv-block-title">Fairs &amp; Festivals</p>
                   <ul class="cv-list">
-                    <li><span class="cv-year">2025</span><span class="cv-entry">Soooon Space Market, Tbilisi, Georgia</span></li>
-                    <li><span class="cv-year">2020</span><span class="cv-entry">Blazarart Young Contemporary Art Fair, Museum of Moscow, Moscow, Russia</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">Blazarart Young Contemporary Art Fair, White Lines Art Gallery, Museum of Moscow, Moscow, Russia</span></li>
                     <li><span class="cv-year">2020</span><span class="cv-entry">Soundwalk, multichannel compositions, Vronihof, Vienna, Austria</span></li>
-                    <li><span class="cv-year">2020</span><span class="cv-entry">Festival of Creepy Distance Interaction, Tallinn, Estonia</span></li>
+                    <li><span class="cv-year">2020</span><span class="cv-entry">Festival of Creepy Distance Interaction, Microbiome Orchestra, Electron Art platform, Tallinn, Estonia</span></li>
                     <li><span class="cv-year">2020</span><span class="cv-entry">Measure of Chaos, performance (Microbiome Orchestra), Central Museum of Communications Popov, St.&nbsp;Petersburg, Russia</span></li>
-                    <li><span class="cv-year">2019</span><span class="cv-entry">Acousmonium / Multichannel Music Festival, New Stage of the Alexandrinsky Theatre, St.&nbsp;Petersburg, Russia</span></li>
+                    <li><span class="cv-year">2019</span><span class="cv-entry">Installation, Acousmonium / Multichannel Music Festival, New Stage of the Alexandrinsky Theatre, St.&nbsp;Petersburg, Russia</span></li>
                     <li><span class="cv-year">2018</span><span class="cv-entry">Seventh Independent Fair of Contemporary Art, Sevkabel Port, St.&nbsp;Petersburg, Russia</span></li>
                   </ul>
                 </div>
@@ -853,7 +857,7 @@
     // no hanging prepositions
     (function() {
       const short = /(^|[\s\u00a0(“"])(a|an|the|of|in|on|at|to|by|as|is|it|or|and|but|for|nor|so|yet|if|be|we|he|she|i|do|my|no|up|its|via|with|from|into|over|than|that|this|was|are|has|had|not|all|can|one|two|her|his|our|out|who|how|may|new|old|each|like|both|through) /gi;
-      document.querySelectorAll('.bio-text, .statement-text p, .cv-entry, .hero-eyebrow, .hero-location, .bio-tags').forEach(el => {
+      document.querySelectorAll('.bio-text p, .statement-text p, .cv-entry, .hero-eyebrow, .hero-location, .bio-tags').forEach(el => {
         const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
         const nodes = [];
         while (walk.nextNode()) nodes.push(walk.currentNode);
