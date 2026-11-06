@@ -1037,7 +1037,7 @@
       // the same mirror work, shown twice in two different forms
       parts: [
         { id: 'voice', title: 'Depth of the Inner Voice', meta: ['2025', 'Mirrors, hand engraving, chromed steel'], text: 'depth-of-the-inner-voice', folder: 'depth-of-the-inner-voice', count: 23 },
-        { id: 'world', title: 'Depth of the Inner World', meta: ['2020', 'Mirrors, sandblasting, chromed steel', 'Photo: Roma Renton'], text: 'depth-of-the-inner-world', folder: 'depth-of-the-inner-world', count: 10 },
+        { id: 'world', title: 'Depth of the Inner World', meta: ['2020', 'SKLAD 17 Gallery, St.\u00a0Petersburg, Russia', 'Mirrors, sandblasting, chromed steel', 'Photo: Roma Renton'], text: 'depth-of-the-inner-world', folder: 'depth-of-the-inner-world', count: 10 },
       ] },
     'quiet':                    { title: 'Quiet Damage',              year: '2026', count: 6,  video: false },
     'under-the-skin-of-the-garden': { title: 'Under the Skin of a Garden', year: '2025', count: 5, video: false },
@@ -1047,9 +1047,9 @@
     'system':                   { title: 'Reference System', year: '2019–2025', count: 22, video: true, credits: 'Photo & Video: Roma Renton',
       // one drip system, shown at different exhibitions — photos grouped by show, newest first
       parts: [
-        { id: 'v4', title: 'New Locality',                  meta: ['Version 4', 'The Gallery, Tbilisi', '2025'],      folder: 'system', photos: [17,18,19,20,21,22] },
-        { id: 'v2', title: 'Salt Room',                     meta: ['Version 2', 'Sisters Room Space, Tbilisi', '2024'], folder: 'system', photos: [1,2,3,4,5,6,7,8,9] },
-        { id: 'v1', title: 'Ordinary Things',               meta: ['Version 1', 'DK Gromov, St. Petersburg', '2019'], folder: 'system', photos: [10,11,12,13,14,15,16] },
+        { id: 'v4', title: 'New Locality',                  meta: ['2025', 'The Gallery, Tbilisi, Georgia', 'Version 4'],      folder: 'system', photos: [17,18,19,20,21,22] },
+        { id: 'v2', title: 'Salt Room',                     meta: ['2024', 'Sisters Room Space, Tbilisi, Georgia', 'Version 2'], folder: 'system', photos: [1,2,3,4,5,6,7,8,9] },
+        { id: 'v1', title: 'Ordinary Things',               meta: ['2019', 'DK Gromov, St.\u00a0Petersburg, Russia', 'Version 1'], folder: 'system', photos: [10,11,12,13,14,15,16] },
       ] },
   };
 
@@ -1095,7 +1095,7 @@
     },
     'quiet': {
       medium: 'Fabric, candle soot, light setup',
-      places: ['Helikon Art Residency, Kocaeli, Turkey'],
+      places: ['2026 · The Lost World · Rubezh × Helikon, Kocaeli, Turkey'],
       text: [
         'Quiet Damage is about memory and marks that stay with us. I think of fabric as something similar to skin. Like our skin, it keeps the marks of what we experience, both inside and outside. The soot, burn marks, and small holes show these traces.',
         'I am interested not in the moment of damage, but in what comes after. Like the human body, the fabric continues to exist, carrying the memory of what has changed it.'
@@ -1103,7 +1103,7 @@
     },
     'under-the-skin-of-the-garden': {
       medium: 'Threads, garden, light setup',
-      places: ['Castello Art Residency, Umbria, Italy'],
+      places: ['2025 · Hidden · Castello Art Residency, Umbria, Italy'],
       text: [
         'It consists of threads stretched between the branches of an olive tree and the ground, symbolizing flows of energy. They remind me of vertical lines of rain or rays of sunlight.',
         'This installation serves as a metaphor for hidden codes, fleeting moments, and the fragile boundaries of our interaction with the world.'
@@ -1111,7 +1111,7 @@
     },
     'choir': {
       medium: 'Threads, nails, spray paint',
-      places: ['Rubezh: Secret Revolution, Tbilisi'],
+      places: ['2025 · Rubezh: Secret Revolution · Tbilisi, Georgia'],
       text: [
         'A choir is many voices breathing as one. Each voice stays separate, like threads crossing an image. This work is based on the image of a group of people singing — a repeating pattern of open mouths is spray-painted onto a curtain of thin threads.',
         'The lines create the surface where the image appears through breaking the form itself. Each of us is a fragile thread, yet together we form a fabric that holds sound. People sing through boundaries, through lines that block and connect.'
@@ -1119,7 +1119,7 @@
     },
     'chamber-of-memory': {
       medium: 'Threads, spray paint',
-      places: ['The Gallery, exhibition “In Good Hands”, Tbilisi'],
+      places: ['2025 · In Good Hands · The Gallery, Tbilisi, Georgia'],
       text: [
         'The installation Chamber of Memory explores themes of personal boundaries, memory, and the passage of time. Unfolding in a small, enclosed space, it becomes a visual metaphor for the inner world — intimate, hidden from outside view.',
         'A dense curtain of black threads stretches from ceiling to floor, creating both a physical and visual barrier between the viewer and the depth of the room. Abstract stains appear on the threads, resembling blurred fragments of memories — images that surface, fade, and return again.'
@@ -1127,6 +1127,7 @@
     },
     'shape-of-a-human': {
       medium: 'Gypsum gold-plated frames, textile mesh, threads',
+      places: ['2022 · Shape of a Human · Birzhevaya 12, St.\u00a0Petersburg, Russia'],
       text: [
         'In this project, I imagine a future in which human existence evolves through transformation. I explore progress and achievement across different fields as expressed through changes in the body.',
         'I envision a human form capable of adapting through cognition — reshaping itself in response to need. In this way, the body becomes a universal, self-designed structure, enabling continuous growth, new achievements, and ongoing transformation.'
@@ -1161,7 +1162,7 @@
     const add = (t, cls) => { const sp = document.createElement('span'); sp.textContent = t; if (cls) sp.className = cls; med.appendChild(sp); };
     document.getElementById('heroMedium').textContent = info.medium;
     if (info.places && info.places.length && !work.parts) {
-      if (info.placesLabel) add(info.placesLabel, 'wm-label');
+      add(info.placesLabel || 'Exhibited', 'wm-label');
       info.places.forEach(t => add(t));
     }
     const box = document.getElementById('workText');
